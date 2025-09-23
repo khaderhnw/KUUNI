@@ -46,14 +46,21 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 .card.pad{padding:14px 16px}
 .section{padding:6px 14px 6px; color:var(--muted); font-weight:700; font-size:13px}
 
-/* ==== GRID & TILE (hardened to prevent overflow) ==== */
+/* ==== GRID & TILE ==== */
 .grid{display:grid; gap:14px; justify-items:stretch}
 .grid.quick{grid-template-columns:repeat(4, minmax(0, 1fr)); grid-auto-flow:row}
 .grid.three{grid-template-columns:repeat(3, minmax(0, 1fr))}
 .tile{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:10px 8px 8px; text-align:center; box-shadow:var(--shadow); cursor:pointer; width:100%; min-width:0}
 .tile .glyph{width:44px;height:44px;border-radius:50%;background:var(--ku-soft);border:2px solid var(--ku-blue);display:grid;place-items:center;margin:0 auto 8px}
-.tile span{display:block;font-size:12px;font-weight:700;color:#18202A;line-height:1.15;overflow-wrap:anywhere}
+.tile span{display:block;font-size:12px;font-weight:700;color:#18202A;line-height:1.15; /* Fix awkward breaks like 'Emergenc y' */
+  word-break: keep-all; overflow-wrap: break-word;}
 
+/* Special styling for Emergency tiles */
+.tile.emergency{border-color:#FAD1D6}
+.tile.emergency .glyph{background:#FFF0F0;border-color:var(--danger);color:var(--danger)}
+.tile.emergency .glyph svg{color:var(--danger)}
+
+/* Bottom nav */
 .nav{position:absolute;left:14px;right:14px;bottom:14px;height:74px;background:var(--card);border:1px solid var(--border);border-radius:28px;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:0 6px;box-shadow:var(--shadow)}
 .nav .item{display:grid;place-items:center;font-size:11px;color:var(--muted);cursor:pointer}
 .nav .item.active{color:var(--ku-blue);font-weight:700}
@@ -113,6 +120,15 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 .stepper .dot.active{background:var(--ku-blue)}
 .checklist .item{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
 .checklist input{margin-top:4px}
+
+/* Profile screen helpers */
+.field{margin-bottom:12px}
+.input, .select{width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:12px;padding:6px 10px;border-radius:16px;background:var(--ku-soft);color:var(--ku-blue);border:1px solid var(--ku-blue);font-weight:700}
+.small{font-size:12px;color:var(--muted)}
+.bigcall{display:block;text-align:center;padding:14px;border-radius:16px;background:var(--danger);color:#fff;font-weight:800;border:2px solid #b11f2d}
+.bigghost{display:block;text-align:center;padding:12px;border-radius:16px;background:#fff0f0;color:var(--danger);font-weight:800;border:2px solid #ffd5da}
 </style>
 </head>
 <body>
@@ -155,50 +171,79 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         </div>
       </div>
 
-      <div class="section">Quick Actions</div>
-      <div class="grid quick" style="padding:0 12px">
-        <div class="tile" onclick="nav('laundry_rooms')"><div class="glyph">
+      <div class="section" id="quickTitle">Quick Actions</div>
+      <div class="grid quick" style="padding:0 12px" id="quickGrid">
+        <div class="tile" data-feature="laundry" onclick="nav('laundry_rooms')">
+          <div class="glyph">
             <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><rect x='3' y='3' width='18' height='18' rx='3'/><circle cx='12' cy='12' r='5'/><circle cx='8' cy='7' r='1.2' fill='currentColor'/><circle cx='12' cy='7' r='1.2' fill='currentColor'/></svg>
-        </div><span>Laundry</span></div>
-        <div class="tile" onclick="nav('maint_list')"><div class="glyph">
+          </div><span>Laundry</span>
+        </div>
+
+        <div class="tile" data-feature="maintenance" onclick="nav('maint_list')">
+          <div class="glyph">
             <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><path d="M4 21h16M9 17V8a4 4 0 0 1 8 0v9"/><rect x="5" y="8" width="14" height="9" rx="2"/></svg>
-        </div><span>Maintenance</span></div>
-        <div class="tile" onclick="nav('book_spaces')"><div class="glyph">
+          </div><span>Maintenance</span>
+        </div>
+
+        <div class="tile" data-feature="booking" onclick="nav('book_spaces')">
+          <div class="glyph">
             <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h10v6H7z"/><path d="M10 21l2-4 2 4"/></svg>
-        </div><span>Booking</span></div>
-        <div class="tile" onclick="nav('comms_feed')"><div class="glyph">
+          </div><span>Booking</span>
+        </div>
+
+        <div class="tile" data-feature="comms" onclick="nav('comms_feed')">
+          <div class="glyph">
             <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><path d="M3 5h18M3 12h18M3 19h18"/></svg>
-        </div><span>Comms</span></div>
+          </div><span>Comms</span>
+        </div>
 
-        <!-- Move flows -->
-        <div class="tile" onclick="nav('movein')"><div class="glyph">📦</div><span>Move-In</span></div>
-        <div class="tile" onclick="nav('moveout')"><div class="glyph">🚚</div><span>Move-Out</span></div>
+        <div class="tile" data-feature="movein" onclick="nav('movein')"><div class="glyph">📦</div><span>Move‑In</span></div>
+        <div class="tile" data-feature="moveout" onclick="nav('moveout')"><div class="glyph">🚚</div><span>Move‑Out</span></div>
 
-        <div class="tile"><div class="glyph">👥</div><span>Visitor</span></div>
-        <div class="tile"><div class="glyph">🆘</div><span>Support</span></div>
-        <div class="tile"><div class="glyph">🚨</div><span>Emergency</span></div>
-        <div class="tile"><div class="glyph">🏆</div><span>Rewards</span></div>
+        <div class="tile" data-feature="visitor"><div class="glyph">👥</div><span>Visitor</span></div>
+        <div class="tile" data-feature="support"><div class="glyph">🆘</div><span>Support</span></div>
+
+        <!-- Emergency QUICK ACTION — fixed visuals + dedicated screen -->
+        <div class="tile emergency" data-feature="emergency" onclick="nav('emergency')">
+          <div class="glyph">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px">
+              <path d="M7 19h10l1-7a6 6 0 10-12 0l1 7z"/>
+              <path d="M4 19h16"/>
+              <path d="M12 3v2M5 5l1.5 1.5M19 5l-1.5 1.5"/>
+            </svg>
+          </div><span>Emergency</span>
+        </div>
+
+        <div class="tile" data-feature="rewards"><div class="glyph">🏆</div><span>Rewards</span></div>
       </div>
 
-      <div class="section">Support &amp; Wellbeing</div>
-      <div class="grid three" style="padding:0 12px">
-        <div class="tile"><div class="glyph">📞</div><span>RA Contact</span></div>
-        <div class="tile"><div class="glyph">🚑</div><span>Emergency</span></div>
-        <div class="tile"><div class="glyph">🗓️</div><span>Counsellor</span></div>
+      <div class="section" id="supportTitle">Support &amp; Wellbeing</div>
+      <div class="grid three" style="padding:0 12px" id="supportGrid">
+        <div class="tile" data-feature="ra_contact"><div class="glyph">📞</div><span>RA Contact</span></div>
+        <div class="tile emergency" data-feature="emergency" onclick="nav('emergency')">
+          <div class="glyph">
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px">
+              <path d="M7 19h10l1-7a6 6 0 10-12 0l1 7z"/>
+              <path d="M4 19h16"/>
+              <path d="M12 3v2M5 5l1.5 1.5M19 5l-1.5 1.5"/>
+            </svg>
+          </div><span>Emergency</span>
+        </div>
+        <div class="tile" data-feature="counsellor"><div class="glyph">🗓️</div><span>Counsellor</span></div>
       </div>
 
-      <div class="section">Community</div>
-      <div class="grid three" style="padding:0 12px 86px">
-        <div class="tile"><div class="glyph">💬</div><span>Dorm Chat</span></div>
-        <div class="tile"><div class="glyph">🔎</div><span>Lost &amp; Found</span></div>
-        <div class="tile"><div class="glyph">🤝</div><span>Peer Match</span></div>
+      <div class="section" id="commTitle">Community</div>
+      <div class="grid three" style="padding:0 12px 86px" id="commGrid">
+        <div class="tile" data-feature="dorm_chat"><div class="glyph">💬</div><span>Dorm Chat</span></div>
+        <div class="tile" data-feature="lost_found"><div class="glyph">🔎</div><span>Lost &amp; Found</span></div>
+        <div class="tile" data-feature="peer_match"><div class="glyph">🤝</div><span>Peer Match</span></div>
       </div>
 
       <nav class="nav">
-        <div class="item active">Home</div>
-        <div class="item">Messages</div>
-        <div class="item">Rewards</div>
-        <div class="item">Profile</div>
+        <div class="item active" onclick="nav('home')">Home</div>
+        <div class="item" onclick="nav('comms_feed')">Messages</div>
+        <div class="item" onclick="toast('Rewards coming soon')">Rewards</div>
+        <div class="item" onclick="nav('profile')">Profile</div>
       </nav>
     </section>
 
@@ -210,7 +255,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div class="header-title"><h1>Laundry</h1><span>Choose a room</span></div>
       </header>
       <div class="card list" style="margin:10px 12px" id="laundryRoomList"></div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <section class="screen" id="laundry_room_detail">
@@ -226,7 +271,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       </div>
       <div class="section">Machines</div>
       <div class="machine-grid" style="padding:0 12px 86px" id="laundryMachines"></div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <div class="modal" id="dir"><div class="sheet"><div style="font-weight:800">Directions</div><div class="map" style="margin-top:6px"><div class="pin"></div></div><button class="btn primary btn bar" onclick="closeModal('dir')">Close</button></div></div>
@@ -240,7 +285,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <button class="badge" onclick="nav('maint_new')">New</button>
       </header>
       <div class="card list" style="margin:10px 12px" id="maintList"></div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <section class="screen" id="maint_new">
@@ -250,7 +295,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       </header>
       <div class="card pad" style="margin:8px 12px">
         <label>Category<br>
-          <select id="cat" style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)">
+          <select id="cat" class="select">
             <option>Air Conditioning</option>
             <option>Plumbing</option>
             <option>Electrical</option>
@@ -259,15 +304,15 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
           </select>
         </label><br><br>
         <label>Location<br>
-          <input id="loc" placeholder="Building C • Room 321" style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)">
+          <input id="loc" placeholder="Building C • Room 321" class="input">
         </label><br><br>
         <label>Details<br>
-          <textarea id="desc" rows="4" placeholder="Explain the problem..." style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)"></textarea>
+          <textarea id="desc" rows="4" placeholder="Explain the problem..." class="input"></textarea>
         </label><br><br>
         <div class="helper">Add photo (optional): [placeholder]</div><br>
         <button class="btn primary btn bar" onclick="submitMaint()">Submit</button>
       </div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <section class="screen" id="maint_ticket">
@@ -294,7 +339,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div id="stars" style="font-size:22px;letter-spacing:2px;cursor:pointer">⭐️⭐️⭐️⭐️⭐️</div>
         <div class="helper">Thanks for your feedback!</div>
       </div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <!-- BOOKING FLOW -->
@@ -310,7 +355,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div class="day" onclick="selectDay(this)">Wed 24</div>
       </div>
       <div class="card list" style="margin:8px 12px" id="spaceList"></div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <section class="screen" id="book_space_detail">
@@ -332,7 +377,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div style="font-weight:700">Check‑in policy</div>
         <div class="helper">Please check in via QR within 10 minutes of start time to avoid a no‑show.</div>
       </div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <section class="screen" id="book_confirm">
@@ -345,7 +390,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
           <div style="width:130px;height:130px;border:10px solid #111;background:repeating-linear-gradient(45deg,#111 0 4px,#fff 4px 8px)"></div>
         </div>
       </div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <!-- COMMUNICATION HUB -->
@@ -362,7 +407,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
           <button class="btn ghost" style="margin-left:auto" onclick="nav('comms_prefs')">Manage</button>
         </div>
       </div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Comms</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Comms</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <section class="screen" id="comms_prefs">
@@ -378,7 +423,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         </div>
         <button class="btn primary btn bar" onclick="nav('comms_feed')">Save</button>
       </div>
-      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Comms</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Comms</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <!-- MOVE-IN JOURNEY -->
@@ -390,7 +435,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       </header>
       <div class="stepper"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <div class="card pad" style="margin:8px 12px" id="moveinStep"></div>
-      <nav class="nav"><div class="item active" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item active" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
     <!-- MOVE-OUT JOURNEY -->
@@ -402,7 +447,74 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       </header>
       <div class="stepper"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <div class="card pad" style="margin:8px 12px" id="moveoutStep"></div>
-      <nav class="nav"><div class="item active" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+      <nav class="nav"><div class="item active" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
+    </section>
+
+    <!-- EMERGENCY SCREEN -->
+    <section class="screen" id="emergency">
+      <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
+      <header class="header">
+        <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--danger)"><path d="M7 19h10l1-7a6 6 0 10-12 0l1 7z"/><path d="M4 19h16"/></svg></div>
+        <div class="header-title"><h1>Emergency</h1><span>Get help fast</span></div>
+      </header>
+
+      <div class="card pad" style="margin:8px 12px">
+        <a class="bigcall" href="tel:999">Call 999</a>
+        <div style="height:8px"></div>
+        <a class="bigghost" href="tel:+971-2-XXXXXXX">Call Campus Security</a>
+        <div class="helper" style="margin-top:8px">Shares your phone number with responders.</div>
+      </div>
+
+      <div class="card pad" style="margin:8px 12px">
+        <div style="font-weight:700">Location</div>
+        <div class="map" style="margin-top:6px"><div class="pin"></div></div>
+        <div class="helper" style="margin-top:6px">Approximate location sent with SOS (when enabled).</div>
+      </div>
+
+      <div class="card pad" style="margin:8px 12px 90px">
+        <div style="font-weight:700;margin-bottom:6px">Helpful contacts</div>
+        <div class="row" style="padding:8px 0;border:none">
+          <div>RA on Duty</div>
+          <a class="pill info" href="tel:+971-5X-XXXXXXX">Call</a>
+        </div>
+        <div class="row" style="padding:8px 0;border:none">
+          <div>Student Health Center</div>
+          <a class="pill info" href="tel:+971-2-XXXXXXX">Call</a>
+        </div>
+      </div>
+
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item" onclick="nav('comms_feed')">Messages</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
+    </section>
+
+    <!-- PROFILE (Action plan → features) -->
+    <section class="screen" id="profile">
+      <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
+      <header class="header">
+        <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><circle cx="12" cy="7" r="3"/><path d="M4 21c1-4 5-6 8-6s7 2 8 6"/></svg></div>
+        <div class="header-title"><h1>Profile</h1><span>Entitlements by action plan</span></div>
+      </header>
+
+      <div class="card pad" style="margin:8px 12px">
+        <div class="field">
+          <label>Full name<br><input id="prof_name" class="input" placeholder="Your name"></label>
+        </div>
+        <div class="field">
+          <label>Email<br><input id="prof_email" class="input" placeholder="you@ku.ac.ae"></label>
+        </div>
+        <div class="field">
+          <label>Action plan code<br>
+            <select id="prof_plan" class="select"></select>
+          </label>
+          <div class="small" style="margin-top:6px">Changing the plan updates which features are visible on Home.</div>
+        </div>
+        <div class="field">
+          <div style="font-weight:700">Features</div>
+          <div id="prof_features" class="chips"></div>
+        </div>
+        <button class="btn primary btn bar" onclick="saveProfile()">Save profile</button>
+      </div>
+
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item active">Profile</div></nav>
     </section>
 
     <div id="toast" class="toast">Saved</div>
@@ -410,6 +522,114 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 </div>
 
 <script>
+/* =========================
+   PLAN → FEATURES / PROFILE
+   ========================= */
+
+// Simple registry of plans to features
+const PLAN_REGISTRY = {
+  "BASIC-2025": [
+    "laundry","maintenance","booking","comms","movein",
+    "visitor","support","ra_contact","dorm_chat"
+  ],
+  "PRO-2025": [
+    "laundry","maintenance","booking","comms","movein","moveout",
+    "visitor","support","rewards","ra_contact","counsellor",
+    "dorm_chat","lost_found","peer_match","emergency"
+  ],
+  "ENT-2025": [
+    "laundry","maintenance","booking","comms","movein","moveout",
+    "visitor","support","rewards","ra_contact","counsellor",
+    "dorm_chat","lost_found","peer_match","emergency"
+  ]
+};
+
+// Profile state
+let profile = {
+  fullName: "Student One",
+  email: "student@ku.ac.ae",
+  planCode: "PRO-2025",
+  features: []
+};
+
+function featuresFor(code){ return PLAN_REGISTRY[code] ? [...PLAN_REGISTRY[code]] : []; }
+
+function applyEntitlements(){
+  const enabled = new Set(profile.features);
+  document.querySelectorAll('[data-feature]').forEach(el=>{
+    el.style.display = enabled.has(el.dataset.feature) ? '' : 'none';
+  });
+
+  // Hide section titles when their grid has no visible tiles
+  function updateSection(titleId, gridId){
+    const grid = document.getElementById(gridId);
+    const visible = Array.from(grid.children).some(ch => ch.style.display !== 'none');
+    document.getElementById(titleId).style.display = visible ? '' : 'none';
+    grid.style.display = visible ? 'grid' : 'none';
+  }
+  updateSection('quickTitle','quickGrid');
+  updateSection('supportTitle','supportGrid');
+  updateSection('commTitle','commGrid');
+}
+
+function renderProfileForm(){
+  // Plan select options
+  const sel = document.getElementById('prof_plan');
+  if(sel.options.length===0){
+    Object.keys(PLAN_REGISTRY).forEach(code=>{
+      const opt = document.createElement('option');
+      opt.value = code; opt.textContent = code;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('prof_name').value = profile.fullName;
+  document.getElementById('prof_email').value = profile.email;
+  sel.value = profile.planCode;
+
+  // Feature chips
+  const area = document.getElementById('prof_features'); area.innerHTML='';
+  profile.features.forEach(f=>{
+    const chip = document.createElement('div'); chip.className='chip'; chip.textContent=f;
+    area.appendChild(chip);
+  });
+}
+
+function saveProfile(){
+  profile.fullName = document.getElementById('prof_name').value || profile.fullName;
+  profile.email = document.getElementById('prof_email').value || profile.email;
+  profile.planCode = document.getElementById('prof_plan').value;
+  profile.features = featuresFor(profile.planCode);
+  applyEntitlements();
+  renderProfileForm();
+  toast('Profile saved');
+  nav('home');
+}
+
+document.addEventListener('change', (e)=>{
+  if(e.target && e.target.id==='prof_plan'){
+    // live preview chips on change (before save)
+    const code = e.target.value;
+    const feats = featuresFor(code);
+    const area = document.getElementById('prof_features'); area.innerHTML='';
+    feats.forEach(f=>{ const chip=document.createElement('div'); chip.className='chip'; chip.textContent=f; area.appendChild(chip); });
+  }
+});
+
+/* =========================
+   NAV + EXISTING FLOWS
+   ========================= */
+function nav(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='laundry_rooms'){ renderLaundryRooms(); }
+  if(id==='book_spaces'){ renderSpaces(); }
+  if(id==='maint_list'){ renderMaint(); }
+  if(id==='comms_feed'){ renderFeed(); }
+  if(id==='movein'){ renderMoveIn(0); }
+  if(id==='moveout'){ renderMoveOut(0); }
+  if(id==='profile'){ renderProfileForm(); }
+}
+
 // ---- Laundry data & functions ----
 const laundryRooms = [
   {id:'a1', name:'Dorm A — Level 1 Laundry', open:'06:00–23:00', busy:'4/10 busy', machines:[
@@ -429,16 +649,6 @@ const laundryRooms = [
 ];
 let LcurrentRoom = null;
 let Lfilter = 'all';
-function nav(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='laundry_rooms'){ renderLaundryRooms(); }
-  if(id==='book_spaces'){ renderSpaces(); }
-  if(id==='maint_list'){ renderMaint(); }
-  if(id==='comms_feed'){ renderFeed(); }
-  if(id==='movein'){ renderMoveIn(0); }
-  if(id==='moveout'){ renderMoveOut(0); }
-}
 function svgWasher(){return `<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="5"/><circle cx="8" cy="7" r="1.2" fill="currentColor"/><circle cx="12" cy="7" r="1.2" fill="currentColor"/>`;}
 function svgDryer(){return `<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="5"/><path d="M12 8l3 4-3 4-3-4 3-4z" />`;}
 function renderLaundryRooms(){
@@ -647,7 +857,10 @@ function toast(msg){
 function openModal(id){ const m=document.getElementById(id); if(m) m.classList.add('show'); }
 function closeModal(id){ const m=document.getElementById(id); if(m) m.classList.remove('show'); }
 
-// Initialize defaults
+// Initialize defaults (profile → features → UI)
+profile.features = featuresFor(profile.planCode);
+applyEntitlements();
+renderProfileForm();
 renderLaundryRooms();
 renderSpaces();
 renderMaint();
