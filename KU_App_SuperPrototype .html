@@ -1,15 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Khalifa University • Housing Super Prototype</title>
+
+<!-- =========================================
+   THEME / TOKENS — EDIT ME: colors, spacing
+   ========================================= -->
 <style>
 :root{
-  --ku-blue:#003F88;
-  --ku-accent:#0089CC;
-  --ku-soft:#E7F0FA;
+  --ku-blue:#003F88;     /* EDIT ME: primary brand blue */
+  --ku-accent:#0089CC;   /* optional accent */
+  --ku-soft:#E7F0FA;     /* soft KU blue for chips/backgrounds */
   --bg:#F6F8FB;
   --card:#ffffff;
   --ink:#1F2329;
@@ -18,7 +21,7 @@
   --success:#059669;
   --warn:#EAB308;
   --danger:#DC3545;
-  --shadow:0 8px 20px rgba(16,24,40,0.06), 0 2px 6px rgba(16,24,40,0.06);
+  --shadow:0 8px 20px rgba(16,24,40,.06), 0 2px 6px rgba(16,24,40,.06);
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink)}
@@ -33,9 +36,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
   linear-gradient(#111,#111) left bottom/12px 10px no-repeat,
   linear-gradient(#111,#111) 20px 6px/12px 10px no-repeat,
   linear-gradient(#111,#111) 40px 2px/12px 10px no-repeat,
-  linear-gradient(#111,#111) 60px 0/12px 10px no-repeat;
-  opacity:.9
-}
+  linear-gradient(#111,#111) 60px 0/12px 10px no-repeat; opacity:.9}
 .header{display:flex;align-items:center;gap:12px;padding:8px 12px}
 .logo{width:56px;height:56px;border-radius:14px;background:var(--ku-soft);border:2px solid var(--ku-blue);display:grid;place-items:center}
 .logo svg{width:28px;height:28px}
@@ -96,7 +97,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 .switch input:checked + label{background:var(--ku-blue)}
 .switch input:checked + label:after{left:21px}
 .helper{font-size:12px;color:var(--muted)}
-/* Booking calendar pills */
+/* Booking pills */
 .day{padding:8px 12px;border:1px solid var(--border);border-radius:14px;margin-right:8px;font-weight:700;color:var(--ink);background:#fff;cursor:pointer}
 .day.active{border-color:var(--ku-blue);color:#fff;background:var(--ku-blue)}
 .slot{padding:8px 12px;border:1px solid var(--border);border-radius:14px;margin:8px 8px 0 0;display:inline-block;cursor:pointer}
@@ -107,6 +108,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 .stepper .dot.active{background:var(--ku-blue)}
 .checklist .item{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
 .checklist input{margin-top:4px}
+.input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid var(--border);outline:none}
 </style>
 </head>
 <body>
@@ -114,21 +116,18 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
   <div class="phone">
     <div class="notch" aria-hidden="true"></div>
 
-    <!-- HOME -->
+    <!-- =================================================
+         HOME — tiles to key flows (Laundry, Maint, etc.)
+         ================================================= -->
     <section class="screen active" id="home">
-      <div class="status">
-        <div class="time">9:41</div><div class="signals"></div>
-      </div>
+      <div class="status"><div class="time">9:41</div><div class="signals"></div></div>
       <header class="header">
         <div class="logo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ku-blue)">
             <path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/>
           </svg>
         </div>
-        <div class="header-title">
-          <h1>Khalifa University</h1>
-          <span>Housing</span>
-        </div>
+        <div class="header-title"><h1>Khalifa University</h1><span>Housing</span></div>
         <div class="avatar">👤</div>
       </header>
 
@@ -136,61 +135,49 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div class="roomcard">
           <div class="icon">
             <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="color:var(--ku-blue)">
-              <rect x="2" y="6" width="20" height="12" rx="2"/>
-              <line x1="2" y1="10" x2="22" y2="10"/>
+              <rect x="2" y="6" width="20" height="12" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
               <rect x="6" y="13" width="8" height="3" fill="currentColor"/>
             </svg>
           </div>
-          <div>
-            <div style="font-weight:700">Access Room Card</div>
-            <div style="font-size:12px;color:var(--muted)">ACR ••••••••</div>
-          </div>
-          <button class="badge">Open</button>
+          <div><div style="font-weight:700">Access Room Card</div><div class="helper">ACR ••••••••</div></div>
+          <button class="badge" onclick="toast('ACR opened')">Open</button>
         </div>
       </div>
 
       <div class="section">Quick Actions</div>
       <div class="grid quick" style="padding:0 12px">
         <div class="tile" onclick="nav('laundry_rooms')"><div class="glyph">
-            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><rect x='3' y='3' width='18' height='18' rx='3'/><circle cx='12' cy='12' r='5'/><circle cx='8' cy='7' r='1.2' fill='currentColor'/><circle cx='12' cy='7' r='1.2' fill='currentColor'/></svg>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)">
+            <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="5"/><circle cx="8" cy="7" r="1.2" fill="currentColor"/><circle cx="12" cy="7" r="1.2" fill="currentColor"/>
+          </svg>
         </div><span>Laundry</span></div>
+
         <div class="tile" onclick="nav('maint_list')"><div class="glyph">
-            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><path d="M4 21h16M9 17V8a4 4 0 0 1 8 0v9"/><rect x="5" y="8" width="14" height="9" rx="2"/></svg>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><path d="M4 21h16M9 17V8a4 4 0 0 1 8 0v9"/><rect x="5" y="8" width="14" height="9" rx="2"/></svg>
         </div><span>Maintenance</span></div>
+
         <div class="tile" onclick="nav('book_spaces')"><div class="glyph">
-            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h10v6H7z"/><path d="M10 21l2-4 2 4"/></svg>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 7h10v6H7z"/><path d="M10 21l2-4 2 4"/></svg>
         </div><span>Booking</span></div>
+
         <div class="tile" onclick="nav('comms_feed')"><div class="glyph">
-            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><path d="M3 5h18M3 12h18M3 19h18"/></svg>
+          <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)"><path d="M3 5h18M3 12h18M3 19h18"/></svg>
         </div><span>Comms</span></div>
-        <div class="tile"><div class="glyph">👥</div><span>Visitor</span></div>
-        <div class="tile"><div class="glyph">🆘</div><span>Support</span></div>
-        <div class="tile"><div class="glyph">🚨</div><span>Emergency</span></div>
-        <div class="tile"><div class="glyph">🏆</div><span>Rewards</span></div>
       </div>
 
-      <div class="section">Support &amp; Wellbeing</div>
-      <div class="grid three" style="padding:0 12px">
-        <div class="tile"><div class="glyph">📞</div><span>RA Contact</span></div>
-        <div class="tile"><div class="glyph">🚑</div><span>Emergency</span></div>
-        <div class="tile"><div class="glyph">🗓️</div><span>Counsellor</span></div>
-      </div>
-
-      <div class="section">Community</div>
+      <div class="section">Support & Wellbeing</div>
       <div class="grid three" style="padding:0 12px 86px">
-        <div class="tile"><div class="glyph">💬</div><span>Dorm Chat</span></div>
-        <div class="tile"><div class="glyph">🔎</div><span>Lost &amp; Found</span></div>
-        <div class="tile"><div class="glyph">🤝</div><span>Peer Match</span></div>
+        <div class="tile" onclick="toast('Contact RA')"><div class="glyph">📞</div><span>RA Contact</span></div>
+        <div class="tile" onclick="toast('Emergency 999')"><div class="glyph">🚑</div><span>Emergency</span></div>
+        <div class="tile" onclick="toast('Book counsellor')"><div class="glyph">🗓️</div><span>Counsellor</span></div>
       </div>
 
-      <nav class="nav">
-        <div class="item active">Home</div>
-        <div class="item">Rewards</div>
-        <div class="item">Profile</div>
-      </nav>
+      <nav class="nav"><div class="item active">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
     </section>
 
-    <!-- LAUNDRY FLOW -->
+    <!-- =================================================
+         LAUNDRY — Rooms list + Room detail
+         ================================================= -->
     <section class="screen" id="laundry_rooms">
       <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
       <header class="header">
@@ -203,28 +190,80 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 
     <section class="screen" id="laundry_room_detail">
       <div class="status"><button class="back" onclick="nav('laundry_rooms')">← Rooms</button><div style="width:90px"></div></div>
-      <div class="toolbar"><h2 id="laundryRoomTitle">Dorm A — Level 1</h2>
+      <div class="toolbar">
+        <h2 id="laundryRoomTitle">Dorm A — Level 1</h2>
         <button class="btn ghost" style="margin-left:auto" onclick="laundryFilter('all')">All</button>
         <button class="btn ghost" onclick="laundryFilter('washer')">Washers</button>
         <button class="btn ghost" onclick="laundryFilter('dryer')">Dryers</button>
       </div>
       <div class="card pad" style="margin:8px 12px">
         <div class="map"><div class="pin"></div></div>
-        <div class="helper" style="margin-top:8px">Open 06:00–23:00 • <button class="btn link" onclick="openModal('dir')">Get directions</button></div>
+        <div class="helper" style="margin-top:8px">
+          Open 06:00–23:00 • <button class="btn link" onclick="openModal('dir')">Get directions</button>
+          • <button class="btn link" onclick="openLaundryBooking()">Book a slot</button> <!-- entry to booking -->
+        </div>
       </div>
       <div class="section">Machines</div>
       <div class="machine-grid" style="padding:0 12px 86px" id="laundryMachines"></div>
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
     </section>
 
-    <div class="modal" id="dir"><div class="sheet"><div style="font-weight:800">Directions</div><div class="map" style="margin-top:6px"><div class="pin"></div></div><button class="btn primary btn bar" onclick="closeModal('dir')">Close</button></div></div>
+    <!-- Sheet modal (Directions) -->
+    <div class="modal" id="dir"><div class="sheet">
+      <div style="font-weight:800">Directions</div>
+      <div class="map" style="margin-top:6px"><div class="pin"></div></div>
+      <button class="btn primary btn bar" onclick="closeModal('dir')">Close</button>
+    </div></div>
 
-    <!-- MAINTENANCE FLOW -->
+    <!-- =================================================
+         LAUNDRY BOOKING — per machine, by day/hour
+         ================================================= -->
+    <section class="screen" id="laundry_booking">
+      <div class="status"><button class="back" onclick="nav('laundry_room_detail')">← Room</button><div style="width:90px"></div></div>
+      <div class="card pad" style="margin:8px 12px">
+        <div style="font-weight:800" id="lbRoomName">Laundry Booking</div>
+        <div class="helper">Pick a machine, day and 30-minute slot.</div>
+
+        <!-- EDIT ME: machine dropdown auto-filled from the room -->
+        <div style="margin-top:10px">
+          <label>Machine<br>
+            <select id="lbMachine" class="input" onchange="renderLbSlots()"></select>
+          </label>
+        </div>
+
+        <!-- EDIT ME: days list is generated from lbDays -->
+        <div id="lbDays" style="margin-top:8px"></div>
+
+        <!-- EDIT ME: slots list is generated from lbTimes -->
+        <div id="lbSlots" style="margin-top:4px"></div>
+
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn primary" onclick="lbReserve()">Reserve Slot</button>
+          <button class="btn ghost" onclick="nav('laundry_room_detail')">Cancel</button>
+        </div>
+      </div>
+
+      <div class="card pad" style="margin:8px 12px">
+        <div style="font-weight:700">Policy</div>
+        <div class="helper">1 active reservation per student. 10‑minute grace period then release.</div>
+      </div>
+    </section>
+
+    <section class="screen" id="laundry_my_bookings">
+      <div class="status"><button class="back" onclick="nav('laundry_rooms')">← Laundry</button><div style="width:90px"></div></div>
+      <div class="card pad" style="margin:8px 12px"><div style="font-weight:800">My Laundry Bookings</div></div>
+      <div class="card list" style="margin:8px 12px 86px" id="lbList"></div>
+      <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
+    </section>
+
+    <!-- =================================================
+         MAINTENANCE — list/new/ticket
+         ================================================= -->
     <section class="screen" id="maint_list">
       <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
       <header class="header">
         <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div>
-        <div class="header-title"><h1>Maintenance</h1><span>Requests &amp; Tracking</span></div>
+        <div class="header-title"><h1>Maintenance</h1><span>Requests & Tracking</span></div>
         <button class="badge" onclick="nav('maint_new')">New</button>
       </header>
       <div class="card list" style="margin:10px 12px" id="maintList"></div>
@@ -233,24 +272,15 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
 
     <section class="screen" id="maint_new">
       <div class="status"><button class="back" onclick="nav('maint_list')">← Requests</button><div style="width:90px"></div></div>
-      <header class="header">
-        <div class="header-title"><h1>Create Request</h1><span>Describe the issue</span></div>
-      </header>
+      <header class="header"><div class="header-title"><h1>Create Request</h1><span>Describe the issue</span></div></header>
       <div class="card pad" style="margin:8px 12px">
         <label>Category<br>
-          <select id="cat" style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)">
-            <option>Air Conditioning</option>
-            <option>Plumbing</option>
-            <option>Electrical</option>
-            <option>Carpentry</option>
+          <select id="cat" class="input">
+            <option>Air Conditioning</option><option>Plumbing</option><option>Electrical</option><option>Carpentry</option>
           </select>
         </label><br><br>
-        <label>Location<br>
-          <input id="loc" placeholder="Building C • Room 321" style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)">
-        </label><br><br>
-        <label>Details<br>
-          <textarea id="desc" rows="4" placeholder="Explain the problem..." style="width:100%;padding:10px;border-radius:12px;border:1px solid var(--border)"></textarea>
-        </label><br><br>
+        <label>Location<br><input id="loc" class="input" placeholder="Building C • Room 321"></label><br><br>
+        <label>Details<br><textarea id="desc" rows="4" class="input" placeholder="Explain the problem..."></textarea></label><br><br>
         <div class="helper">Add photo (optional): [placeholder]</div><br>
         <button class="btn primary btn bar" onclick="submitMaint()">Submit</button>
       </div>
@@ -261,10 +291,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       <div class="status"><button class="back" onclick="nav('maint_list')">← Requests</button><div style="width:90px"></div></div>
       <div class="card pad" style="margin:8px 12px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:800" id="ticketTitle">A/C not cooling</div>
-            <div class="helper" id="ticketMeta">Bldg C • Room 321 • #M-1042</div>
-          </div>
+          <div><div style="font-weight:800" id="ticketTitle">A/C not cooling</div><div class="helper" id="ticketMeta">Bldg C • Room 321 • #M-1042</div></div>
           <div id="ticketPill" class="pill warn">In Progress</div>
         </div>
       </div>
@@ -284,7 +311,9 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Maintenance</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
     </section>
 
-    <!-- BOOKING FLOW -->
+    <!-- =================================================
+         FACILITY BOOKING — list/detail/confirm
+         ================================================= -->
     <section class="screen" id="book_spaces">
       <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
       <header class="header">
@@ -292,9 +321,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div class="header-title"><h1>Facility Booking</h1><span>Gyms • Courts • Rooms</span></div>
       </header>
       <div class="card pad" style="margin:8px 12px">
-        <div class="day active" onclick="selectDay(this)">Mon 22</div>
-        <div class="day" onclick="selectDay(this)">Tue 23</div>
-        <div class="day" onclick="selectDay(this)">Wed 24</div>
+        <div class="day active" onclick="selectDay(this)">Mon 22</div><div class="day" onclick="selectDay(this)">Tue 23</div><div class="day" onclick="selectDay(this)">Wed 24</div>
       </div>
       <div class="card list" style="margin:8px 12px" id="spaceList"></div>
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
@@ -335,12 +362,14 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Booking</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
     </section>
 
-    <!-- COMMUNICATION HUB -->
+    <!-- =================================================
+         COMMS — feed + preferences
+         ================================================= -->
     <section class="screen" id="comms_feed">
       <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
       <header class="header">
         <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div>
-        <div class="header-title"><h1>Communication Hub</h1><span>Announcements &amp; Events</span></div>
+        <div class="header-title"><h1>Communication Hub</h1><span>Announcements & Events</span></div>
       </header>
       <div class="card list" style="margin:10px 12px" id="feed"></div>
       <div class="card pad" style="margin:10px 12px">
@@ -368,25 +397,20 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Comms</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
     </section>
 
-    <!-- MOVE-IN JOURNEY -->
+    <!-- =================================================
+         MOVE-IN / MOVE-OUT — 4-step journeys
+         ================================================= -->
     <section class="screen" id="movein">
       <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
-      <header class="header">
-        <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div>
-        <div class="header-title"><h1>Move‑In</h1><span>Welcome journey</span></div>
-      </header>
+      <header class="header"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div><div class="header-title"><h1>Move‑In</h1><span>Welcome journey</span></div></header>
       <div class="stepper"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <div class="card pad" style="margin:8px 12px" id="moveinStep"></div>
       <nav class="nav"><div class="item active" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
     </section>
 
-    <!-- MOVE-OUT JOURNEY -->
     <section class="screen" id="moveout">
       <div class="status"><button class="back" onclick="nav('home')">← Home</button><div style="width:90px"></div></div>
-      <header class="header">
-        <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div>
-        <div class="header-title"><h1>Move‑Out</h1><span>Checkout journey</span></div>
-      </header>
+      <header class="header"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div><div class="header-title"><h1>Move‑Out</h1><span>Checkout journey</span></div></header>
       <div class="stepper"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
       <div class="card pad" style="margin:8px 12px" id="moveoutStep"></div>
       <nav class="nav"><div class="item active" onclick="nav('home')">Home</div><div class="item">Messages</div><div class="item">Rewards</div><div class="item">Profile</div></nav>
@@ -396,45 +420,65 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
   </div>
 </div>
 
+<!-- =====================================================
+     SCRIPT — Data, Config, Renderers, Router & Helpers
+     ===================================================== -->
 <script>
-// ---- Laundry data & functions (reused from earlier prototype) ----
+/* ========== ICON HELPERS ========== */
+function svgWasher(){return `
+  <rect x="3" y="3" width="18" height="18" rx="3"/>
+  <circle cx="12" cy="12" r="5"/>
+  <circle cx="8" cy="7" r="1.2" fill="currentColor"/>
+  <circle cx="12" cy="7" r="1.2" fill="currentColor"/>`; }
+function svgDryer(){return `
+  <rect x="3" y="3" width="18" height="18" rx="3"/>
+  <circle cx="12" cy="12" r="5"/>
+  <path d="M12 8l3 4-3 4-3-4 3-4z" />`; }
+
+/* ========== SIMPLE ROUTER ========== */
+function nav(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  // On-enter renders:
+  if(id==='laundry_rooms') renderLaundryRooms();
+  if(id==='maint_list')    renderMaint();
+  if(id==='book_spaces')   renderSpaces();
+  if(id==='comms_feed')    renderFeed();
+  if(id==='movein')        renderMoveIn(0);
+  if(id==='moveout')       renderMoveOut(0);
+}
+
+/* ========== DATA: LAUNDRY_ROOMS — EDIT ME ========== */
 const laundryRooms = [
   {id:'a1', name:'Dorm A — Level 1 Laundry', open:'06:00–23:00', busy:'4/10 busy', machines:[
     {id:'w1', type:'washer', name:'Washer 1', state:'running', sub:'Running • 12m left'},
-    {id:'w2', type:'washer', name:'Washer 2', state:'idle', sub:'Idle • Free now'},
-    {id:'d1', type:'dryer', name:'Dryer 1', state:'running', sub:'Running • 23m left'},
-    {id:'d2', type:'dryer', name:'Dryer 2', state:'error', sub:'Out of service'},
+    {id:'w2', type:'washer', name:'Washer 2', state:'idle',    sub:'Idle • Free now'},
+    {id:'d1', type:'dryer',  name:'Dryer 1',  state:'running', sub:'Running • 23m left'},
+    {id:'d2', type:'dryer',  name:'Dryer 2',  state:'error',   sub:'Out of service'},
     {id:'w3', type:'washer', name:'Washer 3', state:'running', sub:'Running • 7m left'},
-    {id:'d3', type:'dryer', name:'Dryer 3', state:'idle', sub:'Idle • Free now'},
+    {id:'d3', type:'dryer',  name:'Dryer 3',  state:'idle',    sub:'Idle • Free now'},
   ]},
   {id:'b2', name:'Dorm B — Basement Laundry', open:'24 hours', busy:'6/12 busy', machines:[
-    {id:'w4', type:'washer', name:'Washer 4', state:'idle', sub:'Idle • Free now'},
+    {id:'w4', type:'washer', name:'Washer 4', state:'idle',    sub:'Idle • Free now'},
     {id:'w5', type:'washer', name:'Washer 5', state:'running', sub:'Running • 18m left'},
-    {id:'d4', type:'dryer', name:'Dryer 4', state:'running', sub:'Running • 10m left'},
-    {id:'d5', type:'dryer', name:'Dryer 5', state:'idle', sub:'Idle • Free now'}
+    {id:'d4', type:'dryer',  name:'Dryer 4',  state:'running', sub:'Running • 10m left'},
+    {id:'d5', type:'dryer',  name:'Dryer 5',  state:'idle',    sub:'Idle • Free now'}
   ]}
 ];
 let LcurrentRoom = null;
 let Lfilter = 'all';
-function nav(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='laundry_rooms'){ renderLaundryRooms(); }
-  if(id==='book_spaces'){ renderSpaces(); }
-  if(id==='maint_list'){ renderMaint(); }
-  if(id==='comms_feed'){ renderFeed(); }
-  if(id==='movein'){ renderMoveIn(0); }
-  if(id==='moveout'){ renderMoveOut(0); }
-}
-function svgWasher(){return `<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="5"/><circle cx="8" cy="7" r="1.2" fill="currentColor"/><circle cx="12" cy="7" r="1.2" fill="currentColor"/>`;}
-function svgDryer(){return `<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="5"/><path d="M12 8l3 4-3 4-3-4 3-4z" />`;}
+
+/* ========== RENDER: LAUNDRY ROOMS LIST ========== */
 function renderLaundryRooms(){
   const box = document.getElementById('laundryRoomList'); box.innerHTML='';
   laundryRooms.forEach(r=>{
     const row = document.createElement('div'); row.className='row';
-    row.innerHTML = `<div class="glyph" style="width:46px;height:46px;border-radius:14px;display:grid;place-items:center;border:2px solid var(--ku-blue);background:var(--ku-soft)">
-      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)">${svgWasher()}</svg></div>
-      <div><div class="name" style="font-weight:800">${r.name}</div><div class="sub">Open ${r.open} • ${r.busy}</div></div>
+    row.innerHTML = `
+      <div class="glyph" style="width:46px;height:46px;border-radius:14px;display:grid;place-items:center;border:2px solid var(--ku-blue);background:var(--ku-soft)">
+        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)">${svgWasher()}</svg>
+      </div>
+      <div><div class="name" style="font-weight:800">${r.name}</div><div class="helper">Open ${r.open} • ${r.busy}</div></div>
       <button class="pill info" onclick="openLaundryRoom('${r.id}')">View</button>`;
     box.appendChild(row);
   });
@@ -445,127 +489,208 @@ function openLaundryRoom(id){
   Lfilter='all'; renderLaundryMachines();
   nav('laundry_room_detail');
 }
+
+/* ========== RENDER: LAUNDRY MACHINES IN ROOM ========== */
 function laundryFilter(mode){ Lfilter=mode; renderLaundryMachines(); }
 function renderLaundryMachines(){
   const area=document.getElementById('laundryMachines'); area.innerHTML='';
-  LcurrentRoom.machines.filter(m=>Lfilter==='all'||m.type===Lfilter).forEach(m=>{
-    const el=document.createElement('div'); el.className='machine';
+  (LcurrentRoom?.machines || []).filter(m=>Lfilter==='all'||m.type===Lfilter).forEach(m=>{
     const col = m.state==='idle'?'success':m.state==='error'?'danger':'warn';
-    el.innerHTML = `<div class="top"><div class="glyph"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)">${m.type==='washer'?svgWasher():svgDryer()}</svg></div>
-      <div class="name">${m.name}</div><div class="status ${col}">${m.state==='idle'?'Free':m.state==='error'?'Out':'Running'}</div></div>
-      <div class="sub">${m.sub}</div><div style="margin-top:8px;display:flex;gap:8px"><button class="btn primary" onclick="toast('Alert set for ${m.name}')">Alert me</button><button class="btn ghost" onclick="toast('Directions opened')">Directions</button></div>`;
+    const el=document.createElement('div'); el.className='machine';
+    el.innerHTML = `
+      <div class="top">
+        <div class="glyph"><svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="width:22px;height:22px;color:var(--ku-blue)">${m.type==='washer'?svgWasher():svgDryer()}</svg></div>
+        <div class="name">${m.name}</div>
+        <div class="status ${col}">${m.state==='idle'?'Free':m.state==='error'?'Out':'Running'}</div>
+      </div>
+      <div class="sub">${m.sub}</div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn primary" onclick="openLaundryBooking('${m.id}')">Book</button>
+        <button class="btn ghost" onclick="toast('Directions opened')">Directions</button>
+      </div>`;
     area.appendChild(el);
   });
 }
 
-// ---- Maintenance data & functions ----
+/* ========== CONFIG: LAUNDRY_BOOKING — EDIT ME ========== */
+const lbDays  = ['Today','Tomorrow','Fri 24','Sat 25','Sun 26']; /* days shown */
+const lbTimes = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30']; /* 30‑min slots */
+
+let lbSelectedDay  = lbDays[0];
+let lbSelectedTime = null;
+let lbSelectedMachineId = null;
+let lbBookings = []; // {id, roomId, roomName, machineId, machineName, day, time}
+
+/* ========== FLOW: OPEN BOOKING SCREEN ========== */
+function openLaundryBooking(machineId=null){
+  if(!LcurrentRoom){ toast('Open a room first'); return; }
+  document.getElementById('lbRoomName').textContent = LcurrentRoom.name;
+
+  // Fill machine dropdown
+  const sel = document.getElementById('lbMachine');
+  sel.innerHTML = LcurrentRoom.machines.map(m=>`<option value="${m.id}">${m.name} (${m.type})</option>`).join('');
+  lbSelectedMachineId = machineId || (LcurrentRoom.machines[0]?.id || null);
+  if(lbSelectedMachineId) sel.value = lbSelectedMachineId;
+
+  // Days
+  const d = document.getElementById('lbDays');
+  d.innerHTML = lbDays.map((x,i)=>`<div class="day ${i===0?'active':''}" onclick="lbPickDay(this)">${x}</div>`).join('');
+  lbSelectedDay = lbDays[0];
+
+  renderLbSlots();
+  nav('laundry_booking');
+}
+function lbPickDay(el){
+  document.querySelectorAll('#lbDays .day').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  lbSelectedDay = el.textContent;
+  renderLbSlots();
+}
+
+/* ========== RENDER: TIME SLOTS ========== */
+function renderLbSlots(){
+  const mid = document.getElementById('lbMachine').value;
+  const grid = document.getElementById('lbSlots'); grid.innerHTML='';
+  lbSelectedTime = null;
+  lbTimes.forEach(t=>{
+    const taken = lbBookings.some(b=>b.roomId===LcurrentRoom.id && b.machineId===mid && b.day===lbSelectedDay && b.time===t);
+    const el = document.createElement('div'); el.className='slot'; el.textContent=t;
+    if(taken){ el.style.opacity=.4; el.style.cursor='not-allowed'; }
+    el.onclick = ()=>{ if(taken) return; document.querySelectorAll('#lbSlots .slot').forEach(s=>s.classList.remove('active')); el.classList.add('active'); lbSelectedTime=t; };
+    grid.appendChild(el);
+  });
+}
+
+/* ========== ACTIONS: RESERVE / SHOW / CANCEL ========== */
+function lbReserve(){
+  const mid = document.getElementById('lbMachine').value;
+  if(!lbSelectedTime){ toast('Pick a time'); return; }
+  const machine = LcurrentRoom.machines.find(m=>m.id===mid);
+  const booking = {
+    id:'LB-'+Math.floor(1000+Math.random()*9000),
+    roomId:LcurrentRoom.id, roomName:LcurrentRoom.name,
+    machineId:mid, machineName:machine?.name || mid,
+    day:lbSelectedDay, time:lbSelectedTime
+  };
+  lbBookings.unshift(booking);
+  lbShowBookings();
+  toast('Laundry slot reserved');
+}
+function lbShowBookings(){
+  const box = document.getElementById('lbList');
+  box.innerHTML = lbBookings.length
+    ? lbBookings.map(b=>`
+      <div class="row">
+        <div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">🧺</div>
+        <div><div style="font-weight:800">${b.machineName} — ${b.roomName}</div><div class="helper">${b.day} • ${b.time}</div></div>
+        <button class="pill danger" onclick="lbCancel('${b.id}')">Cancel</button>
+      </div>`).join('')
+    : '<div class="row"><div class="helper">No bookings yet.</div></div>';
+  nav('laundry_my_bookings');
+}
+function lbCancel(id){
+  lbBookings = lbBookings.filter(x=>x.id!==id);
+  lbShowBookings();
+  toast('Cancelled');
+}
+
+/* ========== DATA: MAINTENANCE — EDIT ME ========== */
 let tickets = [
-  {id:'M-1042', title:'A/C not cooling', meta:'Bldg C • Room 321', state:'In Progress', timeline:['08:12 submitted','09:01 assigned','12:22 technician en route']},
-  {id:'M-1043', title:'Ceiling light flickers', meta:'Bldg A • Room 114', state:'New', timeline:['09:45 submitted']},
-  {id:'M-1033', title:'Leaky tap fixed', meta:'Bldg B • Room 208', state:'Resolved', timeline:['Yesterday resolved']}
+  {id:'M-1042', title:'A/C not cooling',        meta:'Bldg C • Room 321', state:'In Progress', timeline:['08:12 submitted','09:01 assigned','12:22 technician en route']},
+  {id:'M-1043', title:'Ceiling light flickers',  meta:'Bldg A • Room 114', state:'New',         timeline:['09:45 submitted']},
+  {id:'M-1033', title:'Leaky tap fixed',         meta:'Bldg B • Room 208', state:'Resolved',    timeline:['Yesterday resolved']}
 ];
 let currentTicketIndex = 0;
+
+/* ========== RENDER: MAINTENANCE LIST/TICKET ========== */
 function renderMaint(){
-  const box = document.getElementById('maintList'); box.innerHTML='';
+  const box=document.getElementById('maintList'); box.innerHTML='';
   tickets.forEach((t,i)=>{
     const color = t.state==='Resolved'?'success':t.state==='New'?'info':'warn';
     const row = document.createElement('div'); row.className='row';
-    row.innerHTML = `<div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">🛠️</div>
-      <div><div style="font-weight:800">${t.title}</div><div class="sub">${t.meta} • ${t.id}</div></div>
+    row.innerHTML = `
+      <div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">🛠️</div>
+      <div><div style="font-weight:800">${t.title}</div><div class="helper">${t.meta} • ${t.id}</div></div>
       <button class="pill ${color}" onclick="openTicket(${i})">${t.state}</button>`;
     box.appendChild(row);
   });
 }
 function openTicket(i){
-  currentTicketIndex = i; const t = tickets[i];
-  document.getElementById('ticketTitle').textContent = t.title;
-  document.getElementById('ticketMeta').textContent = `${t.meta} • #${t.id}`;
-  const pill = document.getElementById('ticketPill');
-  pill.textContent = t.state; pill.className = 'pill ' + (t.state==='Resolved'?'success':t.state==='New'?'info':'warn');
-  document.getElementById('timeline').textContent = t.timeline.join(' • ');
-  document.getElementById('ratingCard').style.display = (t.state==='Resolved')?'block':'none';
+  currentTicketIndex=i; const t=tickets[i];
+  document.getElementById('ticketTitle').textContent=t.title;
+  document.getElementById('ticketMeta').textContent=`${t.meta} • #${t.id}`;
+  const pill=document.getElementById('ticketPill');
+  pill.textContent=t.state; pill.className='pill ' + (t.state==='Resolved'?'success':t.state==='New'?'info':'warn');
+  document.getElementById('timeline').textContent=t.timeline.join(' • ');
+  document.getElementById('ratingCard').style.display=(t.state==='Resolved')?'block':'none';
   nav('maint_ticket');
 }
 function submitMaint(){
-  const title = document.getElementById('cat').value + ' issue';
-  const meta = document.getElementById('loc').value || 'Bldg ? • Room ?';
-  const id = 'M-' + Math.floor(1000 + Math.random()*9000);
-  const t = {id, title, meta, state:'New', timeline:['Just now submitted']};
-  tickets.unshift(t); toast('Request submitted');
-  nav('maint_list'); renderMaint();
+  const title=document.getElementById('cat').value + ' issue';
+  const meta =document.getElementById('loc').value || 'Bldg ? • Room ?';
+  const id   ='M-'+Math.floor(1000+Math.random()*9000);
+  tickets.unshift({id,title,meta,state:'New',timeline:['Just now submitted']});
+  toast('Request submitted'); nav('maint_list'); renderMaint();
 }
 function advanceTicket(){
-  const t = tickets[currentTicketIndex]; t.timeline.push('Update at ' + new Date().toLocaleTimeString().slice(0,5));
-  toast('Update added'); document.getElementById('timeline').textContent = t.timeline.join(' • ');
+  const t=tickets[currentTicketIndex]; t.timeline.push('Update at '+new Date().toLocaleTimeString().slice(0,5));
+  document.getElementById('timeline').textContent=t.timeline.join(' • '); toast('Update added');
 }
 function resolveTicket(){
-  const t = tickets[currentTicketIndex]; t.state='Resolved'; t.timeline.push('Resolved at ' + new Date().toLocaleTimeString().slice(0,5));
-  openTicket(currentTicketIndex);
-  toast('Marked resolved');
+  const t=tickets[currentTicketIndex]; t.state='Resolved'; t.timeline.push('Resolved at '+new Date().toLocaleTimeString().slice(0,5));
+  openTicket(currentTicketIndex); toast('Marked resolved');
 }
 
-// ---- Booking data & functions ----
-const spaces = [
-  {id:'s1', title:'Gym — Court A', meta:'Capacity 10 • Ground floor'},
-  {id:'s2', title:'Study Room B‑203', meta:'Capacity 4 • Level 2'},
-  {id:'s3', title:'Music Studio 2', meta:'Solo • Level 1'}
-];
-let selectedSpace = null; let selectedSlot = '18:00–19:00';
+/* ========== DATA: FACILITY SPACES — EDIT ME ========== */
+const spaces=[{id:'s1', title:'Gym — Court A',  meta:'Capacity 10 • Ground floor'},
+              {id:'s2', title:'Study Room B‑203', meta:'Capacity 4 • Level 2'},
+              {id:'s3', title:'Music Studio 2',  meta:'Solo • Level 1'}];
+let selectedSpace=null, selectedSlot='18:00–19:00';
+
+/* ========== RENDER: SPACES & BOOKING ========== */
 function renderSpaces(){
-  const box = document.getElementById('spaceList'); box.innerHTML='';
+  const box=document.getElementById('spaceList'); box.innerHTML='';
   spaces.forEach(s=>{
     const row=document.createElement('div'); row.className='row';
-    row.innerHTML = `<div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">🏟️</div>
-      <div><div style="font-weight:800">${s.title}</div><div class="sub">${s.meta}</div></div>
+    row.innerHTML=`
+      <div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">🏟️</div>
+      <div><div style="font-weight:800">${s.title}</div><div class="helper">${s.meta}</div></div>
       <button class="pill info" onclick="openSpace('${s.id}')">Reserve</button>`;
     box.appendChild(row);
   });
 }
-function openSpace(id){
-  selectedSpace = spaces.find(x=>x.id===id);
-  document.getElementById('spaceTitle').textContent = selectedSpace.title;
-  document.getElementById('spaceMeta').textContent = selectedSpace.meta;
-  nav('book_space_detail');
-}
-function selectDay(el){
-  document.querySelectorAll('.day').forEach(d=>d.classList.remove('active'));
-  el.classList.add('active');
-}
-function selectSlot(el){
-  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active'); selectedSlot = el.textContent;
-}
-function confirmBooking(){
-  document.getElementById('confirmMeta').textContent = `${selectedSpace.title}, ${selectedSlot}`;
-  nav('book_confirm'); toast('Reservation confirmed');
-}
+function openSpace(id){ selectedSpace=spaces.find(x=>x.id===id); document.getElementById('spaceTitle').textContent=selectedSpace.title; document.getElementById('spaceMeta').textContent=selectedSpace.meta; nav('book_space_detail'); }
+function selectDay(el){ document.querySelectorAll('.day').forEach(d=>d.classList.remove('active')); el.classList.add('active'); }
+function selectSlot(el){ document.querySelectorAll('#book_space_detail .slot').forEach(s=>s.classList.remove('active')); el.classList.add('active'); selectedSlot=el.textContent; }
+function confirmBooking(){ document.getElementById('confirmMeta').textContent=`${selectedSpace.title}, ${selectedSlot}`; nav('book_confirm'); toast('Reservation confirmed'); }
 
-// ---- Comms data & functions ----
-const items = [
+/* ========== DATA: COMMS FEED — EDIT ME ========== */
+const items=[
   {title:'AC maintenance Fri 10:00–12:00', sub:'Bldg C will have intermittent cooling', tag:'Important', col:'danger'},
-  {title:'Movie night on the lawn', sub:'Sat 20:00 • Bring your own snacks', tag:'Event', col:'info'},
-  {title:'Lost & Found moved', sub:'New desk at Dorm A lobby', tag:'Update', col:'warn'}
+  {title:'Movie night on the lawn',        sub:'Sat 20:00 • Bring your own snacks', tag:'Event',     col:'info'},
+  {title:'Lost & Found moved',             sub:'New desk at Dorm A lobby',           tag:'Update',    col:'warn'}
 ];
 function renderFeed(){
   const box=document.getElementById('feed'); box.innerHTML='';
   items.forEach(i=>{
     const row=document.createElement('div'); row.className='row';
-    row.innerHTML = `<div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">📰</div>
-      <div><div style="font-weight:800">${i.title}</div><div class="sub">${i.sub}</div></div>
+    row.innerHTML=`
+      <div class="glyph" style="width:46px;height:46px;border-radius:14px;border:2px solid var(--ku-blue);background:var(--ku-soft);display:grid;place-items:center">📰</div>
+      <div><div style="font-weight:800">${i.title}</div><div class="helper">${i.sub}</div></div>
       <div class="pill ${i.col}">${i.tag}</div>`;
     box.appendChild(row);
   });
 }
 
-// ---- Move‑In Journey (4 steps) ----
-const moveInSteps = [
+/* ========== MOVE-IN / MOVE-OUT — EDIT ME ========== */
+const moveInSteps=[
   {title:'Pre‑arrival checklist', html:`
     <div class="checklist">
-      <div class="item"><input type="checkbox"> <div><b>Upload documents</b><div class="helper">Passport &amp; student ID</div></div></div>
+      <div class="item"><input type="checkbox"> <div><b>Upload documents</b><div class="helper">Passport & student ID</div></div></div>
       <div class="item"><input type="checkbox"> <div><b>Payments</b><div class="helper">Housing deposit confirmed</div></div></div>
       <div class="item"><input type="checkbox"> <div><b>Room assignment</b><div class="helper">Bldg C • Room 321</div></div></div>
     </div>
-    <div style="margin-top:10px;display:flex;gap:8px"><button class="btn primary" onclick="nextMoveIn()">Continue</button></div>`},
+    <div style="margin-top:10px"><button class="btn primary" onclick="nextMoveIn()">Continue</button></div>`},
   {title:'Arrival day check‑in', html:`
     <div class="helper">Show this at the desk.</div>
     <div class="map" style="display:grid;place-items:center;margin-top:6px">
@@ -589,15 +714,13 @@ let miIndex=0;
 function renderMoveIn(idx){
   miIndex=idx;
   document.querySelectorAll('#movein .dot').forEach((d,i)=>d.classList.toggle('active', i<=idx));
-  const box=document.getElementById('moveinStep');
-  box.innerHTML = `<div style="font-weight:800;margin-bottom:6px">${moveInSteps[idx].title}</div>` + moveInSteps[idx].html;
+  document.getElementById('moveinStep').innerHTML = `<div style="font-weight:800;margin-bottom:6px">${moveInSteps[idx].title}</div>` + moveInSteps[idx].html;
 }
 function nextMoveIn(){ if(miIndex<moveInSteps.length-1){ renderMoveIn(miIndex+1); } else { toast('Move‑in complete!'); } }
 
-// ---- Move‑Out Journey (4 steps) ----
-const moveOutSteps = [
+const moveOutSteps=[
   {title:'Schedule checkout', html:`
-    <div class="helper">Pick a date &amp; time</div>
+    <div class="helper">Pick a date & time</div>
     <div style="margin-top:6px"><div class="day active">May 28</div> <div class="day">May 29</div> <div class="day">May 30</div></div>
     <div style="margin-top:6px"><div class="slot active">10:00</div> <div class="slot">14:00</div> <div class="slot">18:00</div></div>
     <div style="margin-top:10px"><button class="btn primary" onclick="nextMoveOut()">Confirm</button></div>`},
@@ -612,7 +735,7 @@ const moveOutSteps = [
     <div class="helper">Snap photos of key areas; match the checklist used at move‑in.</div>
     <div class="card" style="padding:8px;margin-top:8px"><div class="helper">Photo slots: Window • Desk • Wardrobe • Bathroom</div></div>
     <div style="margin-top:10px"><button class="btn primary" onclick="nextMoveOut()">Submit</button></div>`},
-  {title:'Key/ACR return &amp; deposit', html:`
+  {title:'Key/ACR return & deposit', html:`
     <div class="helper">Return your access card and room key at reception.</div>
     <div class="helper" style="margin-top:6px">Deposit refund: starts processing once inspection is cleared (3–5 business days).</div>
     <div style="margin-top:10px"><button class="btn primary" onclick="toast('Move‑out complete!')">Finish</button></div>`}
@@ -621,21 +744,20 @@ let moIndex=0;
 function renderMoveOut(idx){
   moIndex=idx;
   document.querySelectorAll('#moveout .dot').forEach((d,i)=>d.classList.toggle('active', i<=idx));
-  const box=document.getElementById('moveoutStep');
-  box.innerHTML = `<div style="font-weight:800;margin-bottom:6px">${moveOutSteps[idx].title}</div>` + moveOutSteps[idx].html;
+  document.getElementById('moveoutStep').innerHTML = `<div style="font-weight:800;margin-bottom:6px">${moveOutSteps[idx].title}</div>` + moveOutSteps[idx].html;
 }
 function nextMoveOut(){ if(moIndex<moveOutSteps.length-1){ renderMoveOut(moIndex+1); } else { toast('Move‑out complete!'); } }
 
-// ---- helpers ----
-function toast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 1400);
-}
+/* ========== MODALS / TOASTS ========== */
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 1400); }
 
-// Initialize defaults
-renderLaundryRooms();
-renderSpaces();
+/* ========== INITIALIZE FIRST RENDERS ========== */
+renderLaundryRooms();   // so the list is prebuilt if user taps immediately
 renderMaint();
+renderSpaces();
+renderFeed();
 renderMoveIn(0);
 renderMoveOut(0);
 </script>
