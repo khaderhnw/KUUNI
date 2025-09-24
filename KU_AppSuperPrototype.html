@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -255,7 +255,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       <header class="header">
         <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ku-blue)"><path d="M2 8 L8 2 M16 22 L22 16 M2 16 L8 22 M16 2 L22 8"/></svg></div>
         <div class="header-title"><h1>Laundry</h1><span>Choose a room</span></div>
-        <!-- NEW: quick access to My Bookings -->
+        <!-- Quick access to bookings -->
         <button class="badge" onclick="openLaundryBookings()">Bookings</button>
       </header>
       <div class="card list" style="margin:10px 12px" id="laundryRoomList"></div>
@@ -278,28 +278,33 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
-    <!-- NEW: Laundry Slot Picker -->
+    <!-- LAUNDRY: Slot Picker -->
     <section class="screen" id="laundry_slot">
       <div class="status"><button class="back" onclick="nav('laundry_room_detail')">← Room</button><div style="width:90px"></div></div>
       <div class="card pad" style="margin:8px 12px">
         <div style="font-weight:800" id="LSRoomTitle">Dorm A — Level 1 Laundry</div>
+
         <div class="field" style="margin-top:8px">
           <label>Machine<br>
             <select id="LSelMachine" class="select" onchange="LchangeMachine(this.value)"></select>
           </label>
         </div>
-        <div id="LSDays" style="margin-top:8px; display:flex; overflow:auto;"></div>
-        <div id="LSTimes" style="margin-top:6px"></div>
+
+        <div id="LSDays" style="margin-top:8px;display:flex;overflow:auto"></div>
+        <div id="LSTimes" style="margin-top:4px"></div>
+
         <div style="margin-top:10px;display:flex;gap:8px">
           <button class="btn primary" onclick="submitLaundryReservation()">Reserve Slot</button>
           <button class="btn ghost" onclick="nav('laundry_room_detail')">Cancel</button>
         </div>
-        <div class="helper" style="margin-top:10px">Policy: 1 active reservation per student. 10‑minute grace period, then release.</div>
+        <div class="helper" style="margin-top:10px">
+          Book 30‑minute slots. Past times are hidden for Today. Booked slots are disabled.
+        </div>
       </div>
       <nav class="nav"><div class="item" onclick="nav('home')">Home</div><div class="item active">Laundry</div><div class="item">Rewards</div><div class="item" onclick="nav('profile')">Profile</div></nav>
     </section>
 
-    <!-- NEW: My Laundry Bookings -->
+    <!-- LAUNDRY: My Bookings -->
     <section class="screen" id="laundry_bookings">
       <div class="status"><button class="back" onclick="nav('laundry_rooms')">← Laundry</button><div style="width:90px"></div></div>
       <header class="header">
@@ -506,7 +511,7 @@ html,body{height:100%;margin:0;background:#fff;font-family:-apple-system,BlinkMa
         <div class="helper" style="margin-top:6px">Approximate location sent with SOS (when enabled).</div>
       </div>
 
-      <div class="card pad" style="margin:8px 12px 90px">
+      <div class="card pad" id="helpful" style="margin:8px 12px 90px">
         <div style="font-weight:700;margin-bottom:6px">Helpful contacts</div>
         <div class="row" style="padding:8px 0;border:none">
           <div>RA on Duty</div>
@@ -722,136 +727,131 @@ function renderLaundryMachines(){
   });
 }
 
-// === LAUNDRY BOOKING ADDITIONS ===
-let LselectedMachine = null;
-let LselectedDayKey = null;    // ISO yyyy-mm-dd
-let LselectedTime = null;      // "HH:MM"
-let laundryBookings = [];      // {id, roomId, roomName, machineId, machineName, date, time}
+/* ===== LAUNDRY BOOKING (machine → day → time) ===== */
+let laundryBookings = [];        // {id, roomId, roomName, machineId, machineName, dateKey, time}
+let LselectedMachine = null;     // machine object
+let LselectedDayKey = null;      // 'YYYY-MM-DD'
+let LselectedTime = null;        // 'HH:MM'
+
+// 30-minute slots 08:00 → 20:30
+const L_HOURS = [
+  '08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+  '12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30',
+  '16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30'
+];
+
+// Build next 5 days: Today, Tomorrow, then 'Fri 24' style
+function L_buildDays(count=5){
+  const days=[]; const base = new Date(); base.setHours(0,0,0,0);
+  for(let i=0;i<count;i++){
+    const d = new Date(base); d.setDate(base.getDate()+i);
+    const key = d.toISOString().slice(0,10);
+    const label = i===0 ? 'Today' : i===1 ? 'Tomorrow' :
+      d.toLocaleDateString(undefined,{weekday:'short', day:'2-digit'});
+    days.push({key,label,dateObj:d});
+  }
+  return days;
+}
 
 function openLaundryBooking(machineId){
-  // ensure current room + default machine
+  // default selections
   LselectedMachine = LcurrentRoom.machines.find(m=>m.id===machineId) || LcurrentRoom.machines[0];
+  LselectedDayKey = null; LselectedTime = null;
+
+  // Header
   document.getElementById('LSRoomTitle').textContent = LcurrentRoom.name;
 
-  // populate machine select
+  // Machine selector
   const sel = document.getElementById('LSelMachine'); sel.innerHTML='';
   LcurrentRoom.machines.forEach(m=>{
     const opt = document.createElement('option');
-    opt.value = m.id; opt.textContent = m.name + (m.type==='dryer'?' (Dryer)':' (Washer)');
+    opt.value = m.id; opt.textContent = `${m.name}${m.type==='dryer'?' (Dryer)':' (Washer)'}`;
     if(m.id===LselectedMachine.id) opt.selected = true;
     sel.appendChild(opt);
   });
 
-  // default day = today (ISO key)
-  const today = new Date(); today.setHours(0,0,0,0);
-  LselectedDayKey = today.toISOString().slice(0,10);
-  LselectedTime = null;
-
-  renderLaundryDays();
-  renderLaundryTimes();
+  // Days + Times
+  LrenderDays();
   nav('laundry_slot');
 }
 
 function LchangeMachine(id){
   LselectedMachine = LcurrentRoom.machines.find(m=>m.id===id) || LselectedMachine;
-  renderLaundryTimes();
+  // Re-render times for currently active day
+  const activeDay = document.querySelector('#LSDays .day.active');
+  if(activeDay) LrenderSlots(activeDay.dataset.key);
 }
 
-function LbuildDays(n=4){
-  const out=[]; const now=new Date(); now.setHours(0,0,0,0);
-  for(let i=0;i<n;i++){
-    const d = new Date(now); d.setDate(now.getDate()+i);
-    const key = d.toISOString().slice(0,10);
-    const label = i===0?'Today':i===1?'Tomorrow':d.toLocaleDateString(undefined,{weekday:'short', day:'2-digit'});
-    out.push({key,label});
-  }
-  return out;
-}
-
-function renderLaundryDays(){
+function LrenderDays(){
   const box = document.getElementById('LSDays'); box.innerHTML='';
-  const days = LbuildDays(4);
+  const days = L_buildDays(5);
   days.forEach((d,i)=>{
     const pill = document.createElement('div');
     pill.className = 'day' + (i===0?' active':'');
     pill.textContent = d.label;
+    pill.dataset.key = d.key;
     pill.onclick = ()=>{
-      LselectedDayKey = d.key;
       Array.from(box.children).forEach(c=>c.classList.remove('active'));
       pill.classList.add('active');
+      LselectedDayKey = d.key;
       LselectedTime = null;
-      renderLaundryTimes();
+      LrenderSlots(d.key);
     };
-    if(i===0) LselectedDayKey = d.key;
     box.appendChild(pill);
+    if(i===0){ LselectedDayKey = d.key; }
+  });
+  LrenderSlots(days[0].key);
+}
+
+function L_isBooked(roomId,machineId,dayKey,time){
+  return laundryBookings.some(b=> b.roomId===roomId && b.machineId===machineId && b.dateKey===dayKey && b.time===time);
+}
+
+function LrenderSlots(dayKey){
+  const box = document.getElementById('LSTimes'); box.innerHTML='';
+
+  const dayDate = new Date(dayKey+'T00:00:00');
+  const now = new Date();
+  const isToday = dayDate.toDateString() === now.toDateString();
+
+  L_HOURS.forEach(h=>{
+    const [HH,MM] = h.split(':').map(Number);
+    const slotDT = new Date(dayDate); slotDT.setHours(HH,MM,0,0);
+
+    // Hide past slots for Today
+    if(isToday && slotDT <= now) return;
+
+    const btn = document.createElement('div');
+    btn.className = 'slot';
+    btn.textContent = h;
+
+    const used = L_isBooked(LcurrentRoom.id, LselectedMachine.id, dayKey, h);
+    if(used){
+      btn.classList.add('disabled');
+    } else {
+      btn.onclick = ()=>{
+        Array.from(box.querySelectorAll('.slot')).forEach(s=>s.classList.remove('active'));
+        btn.classList.add('active');
+        LselectedTime = h;
+      };
+    }
+    box.appendChild(btn);
   });
 }
 
-function isSlotBooked(roomId,machineId,dayKey,time){
-  return laundryBookings.some(b=>b.roomId===roomId && b.machineId===machineId && b.date===dayKey && b.time===time);
-}
-
-function renderLaundryTimes(){
-  const box = document.getElementById('LSTimes'); box.innerHTML='';
-  if(!LselectedDayKey) return;
-
-  const date = new Date(LselectedDayKey + 'T00:00:00');
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-
-  // slots every 30 min from 08:00 to 20:30 (inclusive)
-  for(let h=8; h<=20; h++){
-    for(const m of [0,30]){
-      const slotDT = new Date(date); slotDT.setHours(h,m,0,0);
-
-      // Hide past slots for today
-      if(isToday && slotDT <= now) continue;
-
-      const hh = String(h).padStart(2,'0');
-      const mm = String(m).padStart(2,'0');
-      const label = `${hh}:${mm}`;
-
-      const btn = document.createElement('div');
-      btn.className = 'slot';
-      btn.textContent = label;
-
-      if(isSlotBooked(LcurrentRoom.id, LselectedMachine.id, LselectedDayKey, label)){
-        btn.classList.add('disabled');
-      } else {
-        btn.onclick = ()=>{
-          Array.from(box.querySelectorAll('.slot')).forEach(s=>s.classList.remove('active'));
-          btn.classList.add('active');
-          LselectedTime = label;
-        };
-      }
-
-      box.appendChild(btn);
-    }
-  }
-}
-
 function submitLaundryReservation(){
-  if(!LselectedTime){ toast('Pick a time slot first'); return; }
-
-  // Policy: single active reservation (future only)
-  const now = new Date();
-  const active = laundryBookings.filter(b=>{
-    const dt = new Date(b.date + 'T' + b.time + ':00');
-    return dt >= now;
-  }).length;
-  if(active >= 1){ toast('You already have an active reservation'); return; }
-
+  if(!LselectedDayKey || !LselectedTime){ toast('Pick day & time'); return; }
   const id = 'L-' + Math.floor(1000 + Math.random()*9000);
-  laundryBookings.push({
+  laundryBookings.unshift({
     id,
     roomId: LcurrentRoom.id,
     roomName: LcurrentRoom.name,
     machineId: LselectedMachine.id,
     machineName: LselectedMachine.name,
-    date: LselectedDayKey,
+    dateKey: LselectedDayKey,
     time: LselectedTime
   });
-  toast('Reservation confirmed');
+  toast('Reserved!');
   openLaundryBookings();
 }
 
@@ -860,10 +860,13 @@ function openLaundryBookings(){
   nav('laundry_bookings');
 }
 
-function formatBookingWhen(dateKey,time){
-  const d = new Date(dateKey + 'T00:00:00');
-  const label = d.toLocaleDateString(undefined,{weekday:'short', day:'2-digit', month:'short'});
-  return `${label} • ${time}`;
+function L_fmtDay(key){
+  const d = new Date(key+'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
+  if(d.getTime()===today.getTime()) return 'Today';
+  if(d.getTime()===tomorrow.getTime()) return 'Tomorrow';
+  return d.toLocaleDateString(undefined,{weekday:'short', day:'2-digit'});
 }
 
 function cancelLaundryBooking(id){
@@ -875,11 +878,12 @@ function cancelLaundryBooking(id){
 function renderLaundryBookings(){
   const box = document.getElementById('LaundryBookingList'); box.innerHTML='';
   if(!laundryBookings.length){
-    box.innerHTML = `<div class="row" style="border:none"><div class="helper">No bookings yet. Book a slot from a machine to see it here.</div></div>`;
+    box.innerHTML = `<div class="row" style="border:none"><div class="sub">No bookings yet — choose a machine and tap “Book”.</div></div>`;
     return;
   }
-  // sort by soonest
-  laundryBookings.sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  // soonest first
+  laundryBookings.sort((a,b)=> (a.dateKey+a.time).localeCompare(b.dateKey+b.time));
+
   laundryBookings.forEach(b=>{
     const row = document.createElement('div'); row.className='row';
     row.innerHTML = `
@@ -888,13 +892,13 @@ function renderLaundryBookings(){
       </div>
       <div>
         <div style="font-weight:800">${b.machineName} — ${b.roomName}</div>
-        <div class="sub">${formatBookingWhen(b.date,b.time)}</div>
+        <div class="sub">${L_fmtDay(b.dateKey)} • ${b.time}</div>
       </div>
       <button class="pill danger" onclick="cancelLaundryBooking('${b.id}')">Cancel</button>`;
     box.appendChild(row);
   });
 }
-// === END LAUNDRY BOOKING ADDITIONS ===
+/* ===== END LAUNDRY BOOKING ===== */
 
 // ---- Maintenance data & functions ----
 let tickets = [
@@ -942,7 +946,7 @@ function resolveTicket(){
   toast('Marked resolved');
 }
 
-// ---- Booking data & functions ----
+// ---- Booking data & functions (Facilities) ----
 const spaces = [
   {id:'s1', title:'Gym — Court A', meta:'Capacity 10 • Ground floor'},
   {id:'s2', title:'Study Room B‑203', meta:'Capacity 4 • Level 2'},
