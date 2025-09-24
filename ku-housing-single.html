@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Khalifa University — Student Housing (Single‑file Demo)</title>
+  <style>
+/* =============
+   KU Housing Prototype Styles (single-file)
+   ============= */
+:root{
+  --ku-navy:#0a2342;
+  --ku-blue:#1f6feb;
+  --ku-sand:#f4f1ea;
+  --ku-mint:#12a39e;
+  --ku-ink:#0b132b;
+  --text:#0b0f1a;
+  --muted:#5b7083;
+  --bg:#ffffff;
+  --surface:#f7f9fc;
+  --danger:#c62828;
+  --warning:#b26a00;
+  --success:#1b5e20;
+  --radius:12px;
+  --shadow:0 8px 24px rgba(2,12,27,0.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,Noto Sans;color:var(--text);background:var(--surface)}
+.container{width:min(1200px,92vw);margin:0 auto}
+.grid{display:grid;gap:1.25rem}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--bg);border-radius:var(--radius);box-shadow:var(--shadow);overflow:clip}
+.card-pad{padding:clamp(1rem,2.5vw,1.5rem)}
+.tag{display:inline-block;padding:.25rem .6rem;border-radius:999px;font-size:.8rem;background:#eef3ff;color:#1b3a82}
+.kicker{text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--muted);font-size:.78rem}
+.hidden{display:none !important}
+
+.masthead{background:linear-gradient(180deg,var(--ku-ink) 0%,var(--ku-navy) 100%);color:#fff;position:sticky;top:0;z-index:1000;box-shadow:var(--shadow)}
+.masthead .bar{display:flex;align-items:center;gap:1rem;padding:.9rem 0}
+.logo{display:flex;align-items:center;gap:.75rem;text-decoration:none;color:#fff}
+.logo svg{width:36px;height:36px}
+.logo strong{font-weight:800;letter-spacing:.02em}
+.spacer{flex:1}
+.top-actions a.btn{margin-left:.5rem}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1rem;border-radius:10px;text-decoration:none;font-weight:600;border:1px solid transparent;cursor:pointer}
+.btn.primary{background:var(--ku-blue);color:#fff}
+.btn.secondary{background:transparent;border-color:#7aa2f7;color:#e6f0ff}
+.btn.ghost{background:transparent;color:var(--ku-blue);border-color:#c8d6ff}
+.btn.block{width:100%;justify-content:center}
+.btn.small{padding:.45rem .7rem;font-size:.9rem;border-radius:8px}
+.btn:focus-visible{outline:3px solid #a7c0ff;outline-offset:2px}
+
+.navbar{background:#0f274a;color:#dce7ff}
+.navbar nav{display:flex;gap:.25rem;flex-wrap:wrap}
+.navbar a{color:inherit;text-decoration:none;padding:.8rem .9rem;border-radius:8px}
+.navbar a:hover{background:#0b1e3e}
+.navbar .cta{margin-left:auto}
+
+.hero{padding:clamp(2.5rem,5vw,4rem) 0}
+.hero h1{font-size:clamp(1.8rem,3.5vw,2.4rem);margin:.25rem 0 .5rem}
+.hero p{color:var(--muted);max-width:68ch}
+
+.campus-card{position:relative;overflow:hidden;min-height:280px;display:flex}
+.campus-card picture,.campus-card img,.campus-card svg{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.02)}
+.campus-card .overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,35,66,.58),rgba(10,35,66,0))}
+.campus-card .content{position:absolute;bottom:0;left:0;padding:1.1rem;color:#fff}
+.campus-card h3{margin:0 0 .25rem}
+.campus-card .meta{font-size:.9rem;opacity:.92}
+
+footer{margin-top:3rem;padding:2rem 0;color:#7f8aa3}
+footer a{color:inherit}
+
+.panel h2{margin:.5rem 0 1rem}
+.panel .lead{color:var(--muted);max-width:75ch}
+.step{display:flex;gap:1rem;align-items:flex-start}
+.step .num{width:36px;height:36px;border-radius:999px;background:var(--ku-blue);color:#fff;font-weight:700;display:grid;place-items:center;margin-top:.25rem}
+.step .body h3{margin:.1rem 0 .35rem}
+.step .body p{margin:.1rem 0 .5rem;color:var(--muted)}
+
+.alert{border-left:4px solid var(--warning);background:#fff6e5;padding:1rem;border-radius:10px}
+.alert.danger{border-left-color:var(--danger);background:#ffecec}
+.alert.success{border-left-color:var(--success);background:#e9f9ee}
+
+.portal-header{background:#0b1e3e;color:#e8f0ff;padding:1rem 0}
+.portal-nav{background:#12284a;color:#cfe0ff}
+.menu{display:flex;gap:.75rem;flex-wrap:wrap;padding:.4rem 0}
+.mitem{position:relative}
+.mitem>button{background:transparent;color:inherit;border:0;padding:.7rem .9rem;border-radius:8px;font-weight:600;display:flex;align-items:center;gap:.4rem;cursor:pointer}
+.mitem>button:hover,.mitem>button:focus-visible{background:#0e2142;outline:none}
+.dropdown{position:absolute;left:0;top:100%;background:#fff;color:var(--text);min-width:260px;border-radius:12px;box-shadow:var(--shadow);padding:.35rem;display:none;z-index:50}
+.dropdown a{display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:inherit;padding:.6rem .75rem;border-radius:8px}
+.dropdown a:hover{background:#f2f6ff}
+.mitem[aria-expanded="true"] .dropdown{display:block}
+
+.portal-main{padding:1.25rem 0 2rem}
+.breadcrumbs{color:var(--muted);font-size:.92rem;margin-bottom:.75rem}
+.kpanel{background:#fff;border-radius:12px;box-shadow:var(--shadow);padding:1rem 1.1rem}
+.kpanel h3{margin-top:.3rem}
+.kpanel .actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0 0}
+.kpanel .list{margin:.6rem 0 0;padding-left:1.1rem}
+.kpanel .list li{margin:.35rem 0;color:#45546b}
+
+label{display:block;font-weight:600;margin:.65rem 0 .2rem}
+input[type="text"],input[type="date"],input[type="email"],select,textarea{width:100%;padding:.65rem .7rem;border-radius:10px;border:1px solid #c6cfdb;background:#fff}
+input[aria-invalid="true"],select[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:#ff5a5a;box-shadow:0 0 0 3px rgba(255,90,90,.15)}
+.form-row{display:grid;gap:1rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.progress{height:8px;background:#e0e8ff;border-radius:999px;overflow:hidden}
+.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ku-blue),var(--ku-mint));transition:width .35s ease}
+.helper{color:var(--muted);font-size:.9rem}
+.error-list{color:#a40000;margin:.5rem 0 0}
+.deadline{font-variant-numeric:tabular-nums}
+
+@media (max-width:860px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .navbar nav{gap:.15rem}
+  .top-actions{display:none}
+}
+  </style>
+</head>
+<body>
+  <!-- Shared masthead for public pages -->
+  <header class="masthead" id="masthead-public">
+    <div class="container bar">
+      <a class="logo" href="#home" aria-label="Khalifa University">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="1" y="1" width="22" height="22" rx="4" stroke="white" stroke-width="2"/>
+          <path d="M6 13l3 3 9-9" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <strong>Khalifa University</strong>
+        <span aria-hidden="true">|</span>
+        <span>Student Housing</span>
+      </a>
+      <div class="spacer"></div>
+      <div class="top-actions">
+        <a class="btn secondary" href="#how">How to Apply</a>
+        <a class="btn primary" href="#login">Apply / My Account</a>
+      </div>
+    </div>
+    <div class="navbar">
+      <div class="container">
+        <nav aria-label="Primary">
+          <a href="#home" aria-current="page">Home</a>
+          <a href="#how">Getting Started</a>
+          <a href="#home" title="Demo only">Residences & Rooms</a>
+          <a href="#login">Applications</a>
+          <a href="#home" title="Demo only">Dining</a>
+          <a href="#home" title="Demo only">Residence Life</a>
+          <a href="#home" title="Demo only">Other Housing</a>
+          <span class="spacer"></span>
+          <a class="btn small ghost" href="#login">My Account</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- VIEW: HOME -->
+  <main id="view-home">
+    <section class="hero">
+      <div class="container grid grid-2">
+        <div>
+          <span class="kicker">Welcome</span>
+          <h1>Choose your campus</h1>
+          <p>Explore housing at each Khalifa University campus. Compare residences, see maps, and start your application when you’re ready.</p>
+          <p class="helper">Fall application deadline in <span class="deadline" data-deadline="2025-06-30T23:59:00+04:00">--</span>.</p>
+          <div class="actions" style="margin-top:.75rem;">
+            <a class="btn primary" href="#login" data-demo-login>Apply to Residence</a>
+            <a class="btn ghost" href="#how">How to apply</a>
+          </div>
+        </div>
+        <div class="grid grid-3">
+          <a class="card campus-card" href="#campus-main" aria-label="Main Campus">
+            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f6feb"/><stop offset="1" stop-color="#0a2342"/></linearGradient></defs>
+              <rect width="100%" height="100%" fill="url(#g1)"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="36" fill="white" font-family="system-ui, sans-serif">Main Campus</text>
+            </svg>
+            <div class="overlay"></div>
+            <div class="content"><h3>Main Campus</h3><div class="meta">Abu Dhabi</div></div>
+          </a>
+          <a class="card campus-card" href="#campus-masdar" aria-label="Masdar City Campus">
+            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12a39e"/><stop offset="1" stop-color="#0a2342"/></linearGradient></defs>
+              <rect width="100%" height="100%" fill="url(#g2)"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="36" fill="white" font-family="system-ui, sans-serif">Masdar City</text>
+            </svg>
+            <div class="overlay"></div>
+            <div class="content"><h3>Masdar City</h3><div class="meta">Sustainable living hub</div></div>
+          </a>
+          <a class="card campus-card" href="#campus-san" aria-label="Sas Al Nakhl Campus">
+            <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#0a2342"/></linearGradient></defs>
+              <rect width="100%" height="100%" fill="url(#g3)"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="36" fill="white" font-family="system-ui, sans-serif">Sas Al Nakhl</text>
+            </svg>
+            <div class="overlay"></div>
+            <div class="content"><h3>Sas Al Nakhl</h3><div class="meta">Residential community</div></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container grid grid-3">
+        <div class="card card-pad">
+          <span class="kicker">First‑Year</span>
+          <h3>Guaranteed housing window</h3>
+          <p class="lead">New undergraduate students who apply by the deadline are prioritized for housing allocation.</p>
+          <a class="btn ghost" href="#how">Learn how it works</a>
+        </div>
+        <div class="card card-pad">
+          <span class="kicker">Returning Students</span>
+          <h3>Year‑round residence</h3>
+          <p class="lead">Upper‑year and graduate students can apply for full academic year or summer residences.</p>
+          <a class="btn ghost" href="#login">Sign in to apply</a>
+        </div>
+        <div class="card card-pad">
+          <span class="kicker">Short Stays</span>
+          <h3>Conference & research housing</h3>
+          <p class="lead">Short‑term accommodation options for visiting researchers and event guests.</p>
+          <a class="btn ghost" href="#home">Contact housing</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- VIEW: HOW TO APPLY -->
+  <main id="view-how" class="hidden">
+    <header class="masthead">
+      <div class="container bar">
+        <div class="spacer"></div>
+        <div class="top-actions"><a class="btn primary" href="#login">Apply Now</a></div>
+      </div>
+    </header>
+    <main class="container">
+      <section class="panel">
+        <div class="kicker">How To Apply</div>
+        <h2>Ready • Set • Go</h2>
+        <p class="lead">These are the steps we’ll ask every applicant to complete. The Online Service Centre guides you through them and tracks your progress.</p>
+        <div class="grid">
+          <div class="card card-pad">
+            <div class="step">
+              <div class="num" aria-hidden="true">1</div>
+              <div class="body">
+                <h3>Ready — Choose your intake</h3>
+                <p>Select your term (Fall/Spring/Summer) and preferred campus. Check your eligibility and gather documents.</p>
+                <ul class="list">
+                  <li>Government ID / passport</li>
+                  <li>Admission letter or student ID number</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <div class="step">
+              <div class="num">2</div>
+              <div class="body">
+                <h3>Set — Pick preferences</h3>
+                <p>Rank up to three residences and room types. Share accessibility needs and roommate preferences.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <div class="step">
+              <div class="num">3</div>
+              <div class="body">
+                <h3>Go — Apply & pay</h3>
+                <p>Submit your application and pay the application fee to enter the allocation process. Track status anytime.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert" style="margin-top:1rem;">
+          Construction notice: select buildings may have periodic maintenance works. We’ll show any affected residences in the application.
+        </div>
+
+        <div style="margin-top:1rem;">
+          <a class="btn primary" href="#login">Apply through Online Service Centre</a>
+        </div>
+      </section>
+    </main>
+  </main>
+
+  <!-- VIEW: CAMPUS PAGES -->
+  <main id="view-campus-main" class="hidden">
+    <section class="hero">
+      <div class="container grid grid-2">
+        <div>
+          <h1>Live in residence at KU Main Campus</h1>
+          <p class="lead">Immerse yourself in campus life—steps from classrooms, labs and student services.</p>
+          <a class="btn primary" href="#login" data-demo-login>Apply / Sign in</a>
+        </div>
+        <div class="card card-pad">
+          <span class="kicker">Quick facts</span>
+          <ul class="list">
+            <li>Move‑in: late August for Fall term</li>
+            <li>Room types: Single, Double, Studio</li>
+            <li>Front desk support: 24/7</li>
+            <li>Maintenance requests via Online Service Centre</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="view-campus-masdar" class="hidden">
+    <section class="hero">
+      <div class="container grid grid-2">
+        <div>
+          <h1>Live in residence at KU Masdar City</h1>
+          <p class="lead">Sustainable living near cutting‑edge research facilities in Masdar City.</p>
+          <a class="btn primary" href="#login" data-demo-login>Apply / Sign in</a>
+        </div>
+        <div class="card card-pad">
+          <span class="kicker">Quick facts</span>
+          <ul class="list">
+            <li>Move‑in: late August for Fall term</li>
+            <li>Room types: Single, Double, Studio</li>
+            <li>Front desk support: 24/7</li>
+            <li>Maintenance requests via Online Service Centre</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main id="view-campus-san" class="hidden">
+    <section class="hero">
+      <div class="container grid grid-2">
+        <div>
+          <h1>Live in residence at KU Sas Al Nakhl</h1>
+          <p class="lead">Peaceful residential community with easy shuttle connections to campus.</p>
+          <a class="btn primary" href="#login" data-demo-login>Apply / Sign in</a>
+        </div>
+        <div class="card card-pad">
+          <span class="kicker">Quick facts</span>
+          <ul class="list">
+            <li>Move‑in: late August for Fall term</li>
+            <li>Room types: Single, Double, Studio</li>
+            <li>Front desk support: 24/7</li>
+            <li>Maintenance requests via Online Service Centre</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- VIEW: LOGIN -->
+  <main id="view-login" class="hidden">
+    <header class="portal-header">
+      <div class="container">
+        <strong>KU Student Housing & Community Services</strong><br>
+        Online Service Centre
+      </div>
+    </header>
+    <main class="container" style="padding:1rem 0 2rem;">
+      <h1>Welcome</h1>
+      <div class="grid grid-2">
+        <div class="card card-pad">
+          <h3>Students & staff with KU login</h3>
+          <p>Use your KU Single Sign-On (SSO) to access the Online Service Centre.</p>
+          <a class="btn primary" href="#osc">Login with SSO</a>
+        </div>
+        <div class="card card-pad">
+          <h3>Guests with a Housing ID</h3>
+          <p>Visiting researchers or conference guests may use a Housing ID provided in email.</p>
+          <a class="btn ghost" href="#osc">Login with Housing ID</a>
+        </div>
+      </div>
+
+      <div class="alert danger" style="margin-top:1rem;">
+        The Online Service Centre will be unavailable due to scheduled maintenance on Thursday, 25 Sep, 5:00 PM–9:30 PM GST. For urgent issues, please contact your residence front desk.
+      </div>
+
+      <div class="card card-pad" style="margin-top:1rem;">
+        <h3>This portal lets you:</h3>
+        <ul class="list">
+          <li>Apply for student housing, check application status, make payments, and submit maintenance requests.</li>
+          <li>Sign up for meal plans and view balances.</li>
+          <li>View and pay for child care accounts (if applicable).</li>
+        </ul>
+      </div>
+    </main>
+  </main>
+
+  <!-- VIEW: OSC (portal) -->
+  <main id="view-osc" class="hidden">
+    <header class="portal-header">
+      <div class="container">
+        <strong>KU Student Housing & Community Services (SHCS)</strong><br>
+        Online Service Centre
+      </div>
+    </header>
+    <div class="portal-nav">
+      <div class="container">
+        <div class="menu" role="menubar" aria-label="Portal Navigation">
+          <div class="mitem" aria-expanded="false">
+            <button aria-haspopup="true" aria-expanded="false">Prospective Residents ▾</button>
+            <div class="dropdown" role="menu">
+              <a href="#osc/apply">Apply</a>
+              <a href="#osc/status">Check Status</a>
+              <a href="#osc/apply">Roommate Preferences</a>
+            </div>
+          </div>
+          <div class="mitem" aria-expanded="false">
+            <button aria-haspopup="true" aria-expanded="false">Residents ▾</button>
+            <div class="dropdown">
+              <a href="#osc/apply">Application</a>
+              <a href="#osc/maintenance">Maintenance Request</a>
+              <a href="#osc/apply">Room Transfer</a>
+              <a href="#osc/apply">Sublet Application</a>
+            </div>
+          </div>
+          <div class="mitem" aria-expanded="false">
+            <button aria-haspopup="true" aria-expanded="false">Food Services ▾</button>
+            <div class="dropdown">
+              <a href="#osc">Sign up for meal plan</a>
+              <a href="#osc">Check balance</a>
+            </div>
+          </div>
+          <span class="spacer"></span>
+          <strong>29856044</strong>
+          <a class="btn small ghost" href="#home" style="margin-left:.5rem;">Log Out</a>
+        </div>
+      </div>
+    </div>
+
+    <main class="container portal-main">
+      <div id="osc-pane"></div>
+      <div class="grid grid-2" style="margin-top:1rem;">
+        <div class="card card-pad">
+          <span class="kicker">News & Updates</span>
+          <ul class="list">
+            <li>Fall applications close 30 June.</li>
+            <li>Room inventory opens after check‑in day.</li>
+          </ul>
+        </div>
+        <div class="card card-pad">
+          <span class="kicker">Contact Us</span>
+          <ul class="list">
+            <li>Student Housing | Main Campus</li>
+            <li>Student Housing | Masdar City</li>
+            <li>Student Housing | Sas Al Nakhl</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </main>
+
+  <footer>
+    <div class="container grid grid-3">
+      <div>
+        <strong>Khalifa University</strong><br>
+        Student Housing & Community Services
+      </div>
+      <div>
+        <a href="#how">How to apply</a><br>
+        <a href="#login">Online Service Centre</a>
+      </div>
+      <div>© 2025 KU (Demo Prototype)</div>
+    </div>
+  </footer>
+
+  <script>
+// Single-file app JS: Router, dropdowns, wizard, autosave
+(function(){
+
+  // --- Top-level router to switch between 'home', 'how', 'campus-*', 'login', 'osc' ---
+  const sections = {
+    'home': document.getElementById('view-home'),
+    'how': document.getElementById('view-how'),
+    'campus-main': document.getElementById('view-campus-main'),
+    'campus-masdar': document.getElementById('view-campus-masdar'),
+    'campus-san': document.getElementById('view-campus-san'),
+    'login': document.getElementById('view-login'),
+    'osc': document.getElementById('view-osc')
+  };
+
+  function showSection(name){
+    Object.values(sections).forEach(s => s.classList.add('hidden'));
+    (sections[name] || sections.home).classList.remove('hidden');
+    // Toggle masthead visibility (portal has its own header)
+    document.getElementById('masthead-public').classList.toggle('hidden', name==='login' || name==='osc');
+  }
+
+  function route(){
+    let hash = location.hash.replace('#','');
+    if(hash==='') hash = 'home';
+    const [top, sub] = hash.split('/');
+    showSection(top);
+    if(top==='osc') renderOSC(sub || '');
+  }
+  window.addEventListener('hashchange', route);
+  route();
+
+  // --- Deadline countdown ---
+  const dEl = document.querySelector('[data-deadline]');
+  if(dEl){
+    const deadline = new Date(dEl.dataset.deadline);
+    const tick = () => {
+      const diff = deadline - new Date();
+      if(diff <= 0){ dEl.textContent = 'Deadline passed'; return; }
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor(diff / (1000*60*60)) % 24;
+      dEl.textContent = days + 'd ' + hours + 'h';
+    };
+    tick(); setInterval(tick, 60000);
+  }
+
+  // --- Dropdown/menu accessibility (OSC menus) ---
+  const closeAll = () => document.querySelectorAll('.mitem[aria-expanded="true"]').forEach(el => el.setAttribute('aria-expanded','false'));
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.mitem > button');
+    if(btn){
+      const parent = btn.parentElement;
+      const expanded = parent.getAttribute('aria-expanded') === 'true';
+      closeAll();
+      parent.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    } else if(!e.target.closest('.dropdown')) closeAll();
+  });
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeAll(); });
+
+  // --- Fake login buttons on public pages ---
+  document.querySelectorAll('[data-demo-login]')
+    .forEach(b => b.addEventListener('click', e => { e.preventDefault(); location.hash='login'; }));
+
+  // --- OSC sub-views ---
+  const pane = document.getElementById('osc-pane');
+  const views = {
+    '': () => `
+      <div class="kpanel">
+        <h3>Welcome to the Student Housing & Services Centre</h3>
+        <p class="lead">From one hub you can apply for housing, track status, make payments, submit maintenance requests, and manage your move‑in/out tasks.</p>
+        <div class="actions">
+          <a class="btn primary" href="#osc/apply">Start a new application</a>
+          <a class="btn ghost" href="#osc/status">Check status</a>
+          <a class="btn ghost" href="#osc/maintenance">Report maintenance</a>
+        </div>
+      </div>
+      <div class="grid grid-3" style="margin-top:1rem;">
+        ${['Application','Before Moving In','After Moving In'].map((t,i)=>`
+          <div class="card card-pad">
+            <span class="kicker">${t}</span>
+            <h3 style="margin:.35rem 0 .4rem">${['Quick actions','Your checklist','Your tools'][i]}</h3>
+            <ul class="list">
+              ${i===0 ? `
+                <li>Apply, update, or cancel your residence application</li>
+                <li>Set roommate preferences</li>
+                <li>Make payments and view receipts</li>` :
+              i===1 ? `
+                <li>Upload ID and complete emergency contacts</li>
+                <li>Pick your move‑in time slot</li>
+                <li>Read residence community standards</li>` :
+                `
+                <li>Room inventory & condition report</li>
+                <li>Maintenance request</li>
+                <li>Room transfer & subletting</li>`}
+            </ul>
+          </div>`).join('')}
+      </div>
+    `,
+    'apply': () => `
+      <div class="kpanel">
+        <div class="breadcrumbs">Application</div>
+        <h3>Residence Application</h3>
+        <p class="lead">Complete the steps below. Progress is auto‑saved locally so you can return later.</p>
+        <div class="progress" aria-label="Application progress"><span data-progress style="width:0%"></span></div>
+        <div style="margin:.6rem 0 .2rem;" aria-live="polite" class="tag" data-step-label>Step 1 of 5</div>
+
+        <form class="card card-pad" id="kuAppForm" novalidate>
+          <!-- STEP 1: Profile -->
+          <section data-pane="1">
+            <h4>1) Profile & Eligibility</h4>
+            <div class="form-row">
+              <div>
+                <label for="kuid">KU ID / Admission #</label>
+                <input id="kuid" data-field="profile.kuid" required pattern="^[A-Za-z0-9-]{4,}$" placeholder="e.g., 2025-12345">
+                <div class="helper">Use your student number if you have one.</div>
+              </div>
+              <div>
+                <label for="email">KU Email</label>
+                <input id="email" type="email" data-field="profile.email" required placeholder="you@ku.ac.ae">
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Full Name</label>
+                <input data-field="profile.name" required>
+              </div>
+              <div>
+                <label>Date of Birth</label>
+                <input type="date" data-field="profile.dob" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Nationality</label>
+                <input data-field="profile.nationality" required>
+              </div>
+              <div>
+                <label>Level of Study</label>
+                <select data-field="profile.level" required>
+                  <option value="">Select...</option>
+                  <option>Undergraduate</option><option>Graduate</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>Program / Major</label>
+                <input data-field="profile.program" required>
+              </div>
+              <div>
+                <label>Expected Graduation Term</label>
+                <input data-field="profile.gradTerm" placeholder="e.g., Spring 2028">
+              </div>
+            </div>
+            <label><input type="checkbox" data-field="profile.sponsored"> I am sponsored / on a scholarship</label>
+            <div class="helper">If you’re under 18, we’ll collect guardian details after submission.</div>
+          </section>
+
+          <!-- STEP 2: Term & Campus -->
+          <section data-pane="2" hidden>
+            <h4>2) Term & Campus</h4>
+            <div class="form-row">
+              <div>
+                <label>Term</label>
+                <select data-field="term.term" required>
+                  <option value="">Select...</option>
+                  <option>Fall 2025</option><option>Spring 2026</option><option>Summer 2026</option>
+                </select>
+              </div>
+              <div>
+                <label>Campus</label>
+                <select data-field="term.campus" required>
+                  <option value="">Select...</option>
+                  <option>Main Campus</option><option>Masdar City</option><option>Sas Al Nakhl</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 3: Preferences & Accessibility -->
+          <section data-pane="3" hidden>
+            <h4>3) Residence Preferences</h4>
+            <div class="form-row">
+              <div>
+                <label>1st choice residence</label>
+                <select data-field="prefs.rank1"><option>Any</option><option>Falcon Hall</option><option>Pearl Towers</option><option>Desert Crescent</option></select>
+              </div>
+              <div>
+                <label>2nd choice residence</label>
+                <select data-field="prefs.rank2"><option>Any</option><option>Falcon Hall</option><option>Pearl Towers</option><option>Desert Crescent</option></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>3rd choice residence</label>
+                <select data-field="prefs.rank3"><option>Any</option><option>Falcon Hall</option><option>Pearl Towers</option><option>Desert Crescent</option></select>
+              </div>
+              <div>
+                <label>Room type</label>
+                <select data-field="prefs.roomType"><option>Any</option><option>Single</option><option>Double</option><option>Studio</option></select>
+              </div>
+            </div>
+            <label>Accessibility / medical accommodation</label>
+            <textarea rows="3" data-field="prefs.accessibility" placeholder="Optional: mobility, sensory, or medical needs"></textarea>
+            <label><input type="checkbox" data-field="prefs.accomFollowup"> Request a confidential follow‑up about accessibility</label>
+            <div class="form-row">
+              <div>
+                <label>Quiet hours preference</label>
+                <select data-field="prefs.quiet"><option>No preference</option><option>Early sleeper</option><option>Night owl</option></select>
+              </div>
+              <div>
+                <label>Cleanliness preference</label>
+                <select data-field="prefs.clean"><option>Easy‑going</option><option>Average</option><option>Very tidy</option></select>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 4: Roommates -->
+          <section data-pane="4" hidden>
+            <h4>4) Roommates & Community</h4>
+            <div class="form-row">
+              <div>
+                <label>Preferred roommate (optional)</label>
+                <input data-field="mate.name" placeholder="Name or KU ID">
+              </div>
+              <div>
+                <label>Languages (comma‑separated)</label>
+                <input data-field="mate.langs" placeholder="English, Arabic, …">
+              </div>
+            </div>
+            <label><input type="checkbox" data-field="mate.matching"> Opt‑in to roommate matching survey</label>
+          </section>
+
+          <!-- STEP 5: Review & Pay -->
+          <section data-pane="5" hidden>
+            <h4>5) Review & Pay</h4>
+            <p>Application fee: <strong>AED 150</strong></p>
+            <p class="helper">Payment gateway integration placeholder.</p>
+            <label><input type="checkbox" data-field="consent.standards" required> I agree to the Residence Community Standards</label>
+            <label><input type="checkbox" data-field="consent.privacy" required> I consent to the housing office processing my data for allocation</label>
+            <div id="errorSummary" class="error-list" role="alert" aria-live="polite"></div>
+          </section>
+
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+            <button class="btn ghost" id="prevStep" type="button">Back</button>
+            <button class="btn primary" id="nextStep" type="submit">Next</button>
+            <button class="btn" id="saveDraft" type="button">Save draft</button>
+            <button class="btn" id="clearDraft" type="button">Clear draft</button>
+          </div>
+        </form>
+      </div>
+    `,
+    'status': () => `
+      <div class="kpanel">
+        <div class="breadcrumbs">Application</div>
+        <h3>Check Status</h3>
+        <p class="lead">Below are your current applications.</p>
+        <div class="card card-pad">
+          <div class="grid grid-3">
+            ${[
+              {term:'Fall 2025', campus:'Main Campus', status:'In Review'},
+              {term:'Spring 2026', campus:'Masdar City', status:'Submitted'},
+              {term:'Summer 2026', campus:'Sas Al Nakhl', status:'Draft'}
+            ].map(a=>`
+              <div class="card card-pad" style="box-shadow:none;border:1px solid #e6edf8;">
+                <div class="kicker">${a.term}</div>
+                <h4 style="margin:.2rem 0 .3rem">${a.campus}</h4>
+                <span class="tag">${a.status}</span>
+                <div class="actions" style="margin-top:.6rem;">
+                  <a class="btn small ghost" href="#osc/apply">Open</a>
+                  <a class="btn small ghost" href="#">Cancel</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `,
+    'maintenance': () => `
+      <div class="kpanel">
+        <div class="breadcrumbs">After Moving In</div>
+        <h3>Maintenance Request</h3>
+        <form class="card card-pad">
+          <div class="form-row">
+            <div><label>Building</label><input type="text" placeholder="e.g., Falcon Hall" required></div>
+            <div><label>Room</label><input type="text" placeholder="e.g., 4-217" required></div>
+          </div>
+          <label>Category</label>
+          <select required>
+            <option value="">Select...</option>
+            <option>Electrical</option><option>Plumbing</option><option>Furniture</option><option>Other</option>
+          </select>
+          <label>Describe the issue</label>
+          <textarea rows="4" placeholder="Provide a short description" required></textarea>
+          <div class="actions">
+            <button class="btn primary" type="button">Submit Request</button>
+            <button class="btn ghost" type="reset">Reset</button>
+          </div>
+        </form>
+        <div class="alert" style="margin-top:1rem;">
+          For urgent issues (water leaks, electrical hazards), contact Residence Front Desk: +971-2-XXXXXXX
+        </div>
+      </div>
+    `,
+    'thanks': () => `
+      <div class="kpanel">
+        <h3>Application Submitted</h3>
+        <p class="lead">We emailed your receipt and will update your status within 3–5 business days.</p>
+        <div class="actions">
+          <a class="btn primary" href="#osc/status">View Status</a>
+          <a class="btn ghost" href="#osc/apply">Start another application</a>
+        </div>
+      </div>
+    `
+  };
+
+  function renderOSC(sub){
+    const view = views[sub] || views[''];
+    pane.innerHTML = view();
+    initWizardIfExists();
+  }
+
+  // --- Wizard logic (autosave + validation) ---
+  function initWizardIfExists(){
+    const form = document.querySelector('#kuAppForm');
+    if(!form) return;
+
+    const panes = [...form.querySelectorAll('[data-pane]')];
+    const progress = document.querySelector('[data-progress]');
+    const stepLabel = document.querySelector('[data-step-label]');
+    const nextBtn = document.querySelector('#nextStep');
+    const backBtn = document.querySelector('#prevStep');
+    const saveBtn = document.querySelector('#saveDraft');
+    const clearBtn = document.querySelector('#clearDraft');
+    const errorSummary = document.querySelector('#errorSummary');
+
+    const TOTAL = panes.length;
+    const STORAGE_KEY = 'kuApp';
+    let step = 1;
+    let data = load() || {};
+
+    form.querySelectorAll('[data-field]').forEach(el=>{
+      const key = el.dataset.field;
+      const val = get(data, key);
+      if(val !== undefined){
+        if(el.type === 'checkbox') el.checked = !!val;
+        else el.value = val;
+      }
+      el.addEventListener('input', ()=>{
+        set(data, key, el.type==='checkbox' ? el.checked : el.value);
+        save(data);
+      });
+    });
+
+    function show(n){
+      panes.forEach((p,i)=> p.hidden = (i !== n-1));
+      stepLabel.textContent = `Step ${n} of ${TOTAL}`;
+      progress.style.width = `${(n-1)/(TOTAL-1)*100}%`;
+      backBtn.disabled = n===1;
+      nextBtn.textContent = n===TOTAL ? 'Submit Application' : 'Next';
+      errorSummary && (errorSummary.textContent = '');
+    }
+
+    function validateStep(n){
+      let valid = true;
+      const pane = panes[n-1];
+      const requiredEls = pane.querySelectorAll('[required]');
+      requiredEls.forEach(el=>{
+        const ok = el.type==='checkbox' ? el.checked : !!el.value.trim();
+        el.setAttribute('aria-invalid', String(!ok));
+        if(!ok) valid = false;
+      });
+      if(!valid && errorSummary){
+        errorSummary.textContent = 'Please complete the highlighted fields before continuing.';
+        pane.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+      return valid;
+    }
+
+    nextBtn.addEventListener('click', e=>{
+      e.preventDefault();
+      if(step < TOTAL){
+        if(!validateStep(step)) return;
+        step++; show(step);
+      } else {
+        if(!validateStep(step)) return;
+        nextBtn.disabled = true; nextBtn.textContent = 'Submitting…';
+        setTimeout(()=>{ localStorage.removeItem(STORAGE_KEY); location.hash = '#osc/thanks'; }, 800);
+      }
+    });
+
+    backBtn.addEventListener('click', e=>{ e.preventDefault(); if(step>1){ step--; show(step);} });
+    saveBtn.addEventListener('click', ()=>{ save(data); alert('Draft saved in your browser.'); });
+    clearBtn.addEventListener('click', ()=>{ localStorage.removeItem(STORAGE_KEY); form.reset(); data={}; alert('Draft cleared.'); });
+
+    show(step);
+
+    function save(obj){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); }catch{} }
+    function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch{ return null; } }
+    function get(obj, path){ return path.split('.').reduce((o,k)=> o?.[k], obj); }
+    function set(obj, path, value){
+      const keys = path.split('.'); let ref = obj;
+      keys.slice(0,-1).forEach(k=> ref = ref[k] = ref[k] ?? {});
+      ref[keys.at(-1)] = value;
+    }
+  }
+
+})();  
+  </script>
+</body>
+</html>
