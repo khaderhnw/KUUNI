@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Who We Serve — Abu Dhabi Life Moments (2025 → 2028)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0b0c10; --panel:#14161a; --muted:#777b83; --text:#e8eaed; --accent:#8ab4f8; }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{padding:24px 20px 12px;border-bottom:1px solid #1f232a}
+  h1{margin:0 0 8px;font-weight:700;font-size:24px;letter-spacing:.2px}
+  .subtitle{color:var(--muted);font-size:13px}
+  main{padding:18px 20px 28px;max-width:1200px;margin:0 auto}
+  .controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .pill{padding:6px 10px;background:var(--panel);border:1px solid #1f232a;border-radius:999px;color:var(--text);font-size:13px;cursor:pointer}
+  .pill.active{outline:2px solid var(--accent)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .card{background:var(--panel);border:1px solid #1f232a;border-radius:10px;padding:14px}
+  .lm-name{font-weight:600;font-size:14px;margin-bottom:6px;min-height:38px}
+  .lm-type{font-size:11px;color:var(--muted)}
+  .lm-number{font-size:22px;font-weight:700;margin:8px 0;letter-spacing:.2px}
+  .lm-foot{font-size:11px;color:var(--muted)}
+  .chart-wrap{margin:22px 0 10px;background:var(--panel);border:1px solid #1f232a;border-radius:10px;padding:14px}
+  footer{padding:10px 20px 28px;color:var(--muted);font-size:12px;line-height:1.5;border-top:1px solid #1f232a}
+  .sources{margin-top:10px}
+  @media (max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Who We Serve — Abu Dhabi Life Moments (2025 → 2028)</h1>
+  <div class="subtitle">People expected to go through each Life Moment per year • Official baselines where published; proxies are flagged</div>
+</header>
+<main>
+  <div class="controls">
+    <div class="pill active" data-year="y2025">Show 2025</div>
+    <div class="pill" data-year="y2028">Show 2028</div>
+    <div class="pill" id="toggleTier">All</div>
+  </div>
+  <div class="chart-wrap"><canvas id="lmChart" height="70"></canvas></div>
+  <div id="grid" class="grid"></div>
+</main>
+<footer>
+  <div><strong>Method.</strong> 2025 values use latest official Abu Dhabi baselines where available; 2028 values are modest forecasts. Where an annual Abu Dhabi series is not public, a planning proxy is shown and should be replaced by the owner dataset.</div>
+  <div class="sources"><strong>Official baselines used:</strong> ADJD/WAM civil marriages; DoH/SCAD births (2024=39,333) and deaths (2024=4,499); ADDED/ADRA new licences (2023=25,647; 2024 +16%); ADREC/DMT real-estate transactions (2024=28,249); DCT hotel guests (2024=5.8M); SCAD population (2024=4,135,985, +7.5%).</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const data = [
+  {id:"marriage_total", name:"Getting Married (all channels)", lm_type:"Tier 1", y2025:26000, y2028:31500, source:"ADJD civil; Sharia proxy", notes:"Replace Sharia count with ADJD totals."},
+  {id:"baby", name:"Having a Baby", lm_type:"Tier 1", y2025:39700, y2028:40930, source:"DoH/SCAD births", notes:"+1%/yr"},
+  {id:"bereavement", name:"Losing a Loved One", lm_type:"Tier 1", y2025:4590, y2028:4871, source:"DoH/SCAD deaths", notes:"+2%/yr"},
+  {id:"disability", name:"Getting Disability Recognition", lm_type:"Tier 1", y2025:3150, y2028:3500, source:"ZHO POD stock proxy", notes:"10% of stock per year"},
+  {id:"school", name:"Taking my Kid to School (new admissions/transfers)", lm_type:"Tier 1", y2025:45000, y2028:50000, source:"ADEK/MoE to confirm", notes:"proxy"},
+  {id:"retiring", name:"Retiring (new pensions)", lm_type:"Tier 1", y2025:9500, y2028:10500, source:"ADPF to confirm", notes:"proxy"},
+  {id:"divorce", name:"Getting Divorced", lm_type:"Tier 1", y2025:6200, y2028:6600, source:"ADJD to confirm", notes:"proxy ratio vs marriages"},
+  {id:"driver", name:"Getting Driver License/Car (first-time/exchange)", lm_type:"Tier 1", y2025:70000, y2028:78000, source:"ADP/ITC to confirm", notes:"proxy"},
+  {id:"housing", name:"Housing (real estate transactions)", lm_type:"Tier 1", y2025:31000, y2028:40610, source:"ADREC/DMT", notes:"growth path"},
+  {id:"business", name:"Starting a Business (new licences)", lm_type:"Tier 1", y2025:31000, y2028:37546, source:"ADDED/ADRA", notes:"growth path"},
+  {id:"visiting", name:"Visiting Abu Dhabi (hotel guests)", lm_type:"Tier 2", y2025:6000000, y2028:7322366, source:"DCT", notes:"+6%/yr"},
+  {id:"moving", name:"Moving to Abu Dhabi (net new residents)", lm_type:"Tier 2", y2025:165000, y2028:186000, source:"SCAD population growth", notes:"net new per year"},
+  {id:"coming_of_age", name:"Coming of Age (turning 18)", lm_type:"Tier 2", y2025:30000, y2028:31000, source:"SCAD to confirm", notes:"proxy"},
+  {id:"chronic", name:"Having a Chronic Illness (newly diagnosed NCD)", lm_type:"Tier 2", y2025:15000, y2028:17000, source:"DoH to confirm", notes:"proxy"}
+];
+
+let currentYearKey = 'y2025', filterTier = 'All';
+const grid = document.getElementById('grid');
+const pills = document.querySelectorAll('.pill[data-year]');
+const toggleTier = document.getElementById('toggleTier');
+pills.forEach(p => p.addEventListener('click', ()=>{pills.forEach(x=>x.classList.remove('active'));p.classList.add('active');currentYearKey=p.getAttribute('data-year');render();}));
+toggleTier.addEventListener('click', ()=>{filterTier = filterTier==='All'?'Tier 1':(filterTier==='Tier 1'?'Tier 2':'All');toggleTier.textContent = filterTier==='All'?'All':(filterTier+' only');render();});
+const ctx = document.getElementById('lmChart').getContext('2d'); let chart;
+function fmt(n){ if(n>=1_000_000) return (n/1_000_000).toFixed(2).replace(/\.00$/,'')+'M'; if(n>=1000) return Math.round(n/1000)+'k'; return n.toLocaleString(); }
+function render(){
+  const list = data.filter(d=>filterTier==='All'||d.lm_type===filterTier).slice().sort((a,b)=>b[currentYearKey]-a[currentYearKey]);
+  grid.innerHTML = list.map(d=>`
+    <div class="card">
+      <div class="lm-name">${d.name}</div>
+      <div class="lm-type">${d.lm_type}</div>
+      <div class="lm-number">${fmt(d[currentYearKey])}</div>
+      <div class="lm-foot">${currentYearKey==='y2025'?'2025 baseline':'2028 outlook'} • <span title="${d.notes}">${d.source}</span></div>
+    </div>`).join('');
+  const labels = list.map(d=>d.name), values = list.map(d=>d[currentYearKey]);
+  if(chart) chart.destroy();
+  chart = new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:currentYearKey==='y2025'?'2025 baseline':'2028 outlook',data:values}]} ,
+    options:{responsive:true,plugins:{legend:{display:true},tooltip:{callbacks:{label:c=>fmt(c.parsed.y)}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+}
+render();
+</script>
+</body>
+</html>
