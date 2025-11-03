@@ -1,357 +1,114 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Who We Serve — Abu Dhabi Life Moments (2025 → 2028)</title>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Abu Dhabi Life Moments — Infographic (2025 → 2028)</title>
 <style>
-  :root{
-    --bg:#0c0f14; --panel:#141923; --panel-2:#0f131a;
-    --line:#202531; --muted:#8b93a2; --text:#eef2f7;
-    --accent:#7cc4ff; --accent-2:#9ad58b; --tier1:#4fb3ff; --tier2:#c89cff;
-    --bar25:#2a3242; --bar28:#3a4a66; --chip:#1b2230;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);
-       font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-  header{padding:22px 20px 10px;border-bottom:1px solid var(--line)}
-  h1{margin:0 0 6px;font-weight:700;font-size:24px;letter-spacing:.2px}
-  .subtitle{color:var(--muted);font-size:13px}
-  main{padding:18px 20px 28px;max-width:1200px;margin:0 auto}
-  .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0 10px}
-  .pill, select{
-    padding:8px 12px;background:var(--panel);border:1px solid var(--line);
-    border-radius:999px;color:var(--text);font-size:13px;cursor:pointer
-  }
-  .pill.active{outline:2px solid var(--accent)}
-  select{border-radius:10px}
-  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0 16px}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
-  .kpi .label{font-size:12px;color:var(--muted)}
-  .kpi .val{font-size:22px;font-weight:700;margin-top:4px}
-  .chart-wrap{margin:10px 0 18px;background:var(--panel);border:1px solid var(--line);
-              border-radius:12px;padding:12px;position:relative}
-  .chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;color:var(--muted);font-size:12px}
-  canvas{width:100%;height:360px;border-radius:8px;background:linear-gradient(180deg,var(--panel-2),transparent)}
-  #tt{position:absolute;pointer-events:none;background:#0b1522;border:1px solid #2a3a52;
-      color:#cfe5ff;padding:6px 8px;border-radius:8px;font-size:12px;display:none;max-width:260px}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-  .lm-name{font-weight:700;font-size:14px;line-height:1.3;min-height:40px}
-  .lm-meta{display:flex;gap:6px;margin:4px 0 8px}
-  .chip{background:var(--chip);color:var(--muted);border:1px solid var(--line);
-        padding:4px 8px;border-radius:999px;font-size:11px;white-space:nowrap}
-  .figs{display:flex;gap:10px;align-items:baseline}
-  .num{font-size:18px;font-weight:800}
-  .num small{font-size:12px;color:var(--muted)}
-  .delta{margin-left:auto;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);
-         background:#132029;color:var(--accent)}
-  .bars{margin-top:8px}
-  .bar-row{display:flex;gap:6px;align-items:center;margin:4px 0}
-  .bar{height:10px;border-radius:6px;background:var(--bar25);position:relative}
-  .bar.b2028{background:var(--bar28)}
-  .bar-label{width:38px;color:var(--muted);font-size:11px}
-  .foot{padding:10px 0 0;color:var(--muted);font-size:12px;line-height:1.5;border-top:1px dashed var(--line);margin-top:16px}
-  .sources{margin-top:8px}
-  @media (max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media (max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media (max-width:540px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}}
+:root{
+  --bg:#0b1020;--ink:#f4f7ff;--muted:#9fb0c7;--line:#1a2440;
+  --card:#0f1630;--card2:#111a38;--bar25:#1e2b52;--bar28:#2e4b8d;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 28px}
+h1{margin:0 0 4px;font-size:28px;letter-spacing:.2px}
+.subt{color:var(--muted);font-size:13px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.kpi{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);
+  border-radius:14px;padding:12px}
+.kpi .lbl{color:var(--muted);font-size:12px}
+.kpi .val{font-size:22px;font-weight:800;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);
+  border-radius:16px;padding:14px}
+.topline{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.icon{font-size:22px;line-height:1}
+.title{font-weight:800;font-size:14px;flex:1}
+.tier{font-size:10px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);
+  background:#0f1a33;color:#c8d7f0}
+.number{font-size:26px;font-weight:900}
+.number span{color:var(--muted);font-weight:700;font-size:12px;margin-left:6px}
+.sub{color:var(--muted);font-size:12px;margin-top:4px}
+.sub .pct{color:#b2ffc2}
+.bars{height:12px;position:relative;margin-top:10px;background:#0b1429;border-radius:8px;border:1px solid var(--line)}
+.bar{position:absolute;height:10px;border-radius:7px;top:1px;left:1px}
+.b25{background:var(--bar25)} .b28{background:var(--bar28);opacity:.95}
+.foot{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.5}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#0f1a33;margin-left:6px}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)} .kpis{grid-template-columns:1fr}}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header>
-  <h1>Who We Serve — Abu Dhabi Life Moments (2025 → 2028)</h1>
-  <div class="subtitle">People expected to go through each Life Moment per year • Official baselines where published; proxies are flagged</div>
-</header>
+<div class="wrap">
+  <h1>Abu Dhabi Life Moments — 2025 → 2028</h1>
+  <div class="subt">Annual flows; <span class="badge">2025 Baseline</span> vs <span class="badge">2028 Outlook</span>. “Visiting Abu Dhabi” kept in footer (context) to avoid scale skew.</div>
 
-<main>
-  <!-- Controls -->
-  <div class="toolbar">
-    <div class="pill active" data-year="y2025">Show 2025</div>
-    <div class="pill" data-year="y2028">Show 2028</div>
-    <div class="pill" id="toggleTier">All</div>
-    <select id="sort">
-      <option value="y2028">Sort: 2028 (high → low)</option>
-      <option value="y2025">Sort: 2025 (high → low)</option>
-      <option value="delta">Sort: Change (Δ)</option>
-      <option value="az">Sort: A → Z</option>
-    </select>
-  </div>
-
-  <!-- KPIs -->
+  <!-- KPI strip (auto-calculated by JS) -->
   <div class="kpis">
-    <div class="kpi"><div class="label">Total people in 2025</div><div class="val" id="kpi25">–</div></div>
-    <div class="kpi"><div class="label">Total people in 2028</div><div class="val" id="kpi28">–</div></div>
-    <div class="kpi"><div class="label">Overall change</div><div class="val" id="kpidelta">–</div></div>
-  </div>
-
-  <!-- Chart -->
-  <div class="chart-wrap">
-    <div class="chart-head">
-      <div id="chartTitle">Top 10 by selected year</div>
-      <div id="chartCaption">Bars scale to the largest value (top‑10 shown).</div>
-    </div>
-    <canvas id="lmCanvas" width="1200" height="360" aria-label="Top life moments bar chart"></canvas>
-    <div id="tt"></div>
+    <div class="kpi"><div class="lbl">Total 2025 (excl. Visitors)</div><div class="val" id="k25">—</div></div>
+    <div class="kpi"><div class="lbl">Total 2028 (excl. Visitors)</div><div class="val" id="k28">—</div></div>
+    <div class="kpi"><div class="lbl">Change 2025→2028</div><div class="val" id="kchg">—</div></div>
   </div>
 
   <!-- Cards -->
-  <div id="grid" class="grid"></div>
+  <div class="grid" id="grid"></div>
 
-  <!-- Footer -->
   <div class="foot">
-    <strong>Method.</strong> 2025 values use the latest official Abu Dhabi baselines where available; 2028 values are modest forecasts. Where an annual Abu Dhabi series is not public, a planning proxy is shown and should be replaced by the owner dataset.
-    <div class="sources"><strong>Official baselines used:</strong> ADJD/WAM civil marriages; DoH/SCAD births (2024=39,333) & deaths (2024=4,499); ADDED/ADRA new licences (2023=25,647; 2024 +16%); ADREC/DMT real‑estate (2024=28,249); DCT hotel guests (2024=5.8M); SCAD population (2024=4,135,985, +7.5%).</div>
+    <strong>Tourism context (not charted):</strong> DCT hotel guests 2024 = 5.8M; 2025 ≈ 6.1M; 2028 ≈ 7.3M (≈ 1.48→1.77 visitors per resident).<br/>
+    <strong>Sources:</strong> SCAD / DoH / DCT / ADREC / ADDED (2025 baselines); 2028 outlooks reflect modest trend. Figures align to your current deck.
   </div>
-</main>
+</div>
 
 <script>
-/* ======== DATA ======== */
 const data = [
-  {id:"marriage_total", name:"Getting Married (all channels)", lm_type:"Tier 1", y2025:26000,  y2028:31500,  source:"ADJD civil; Sharia proxy", notes:"Replace Sharia count with ADJD totals."},
-  {id:"baby",           name:"Having a Baby (live births)",     lm_type:"Tier 1", y2025:39700,  y2028:40930,  source:"DoH/SCAD births", notes:"+1%/yr"},
-  {id:"bereavement",    name:"Losing a Loved One (deaths)",     lm_type:"Tier 1", y2025:4590,   y2028:4871,   source:"DoH/SCAD deaths", notes:"+2%/yr"},
-  {id:"disability",     name:"Getting Disability Recognition",  lm_type:"Tier 1", y2025:3150,   y2028:3500,   source:"ZHO POD stock proxy", notes:"10% of stock per year"},
-  {id:"school",         name:"Taking my Kid to School (new admissions/transfers)", lm_type:"Tier 1", y2025:45000,  y2028:50000,  source:"ADEK/MoE to confirm", notes:"proxy"},
-  {id:"retiring",       name:"Retiring (new pensions)",         lm_type:"Tier 1", y2025:9500,   y2028:10500,  source:"ADPF to confirm", notes:"proxy"},
-  {id:"divorce",        name:"Getting Divorced",                lm_type:"Tier 1", y2025:6200,   y2028:6600,   source:"ADJD to confirm", notes:"proxy ratio vs marriages"},
-  {id:"driver",         name:"Getting Driver Licence/Car (first‑time/exchange)", lm_type:"Tier 1", y2025:70000,  y2028:78000,  source:"ADP/ITC to confirm", notes:"proxy"},
-  {id:"housing",        name:"Housing (real‑estate transactions)", lm_type:"Tier 1", y2025:31000,  y2028:40610,  source:"ADREC/DMT", notes:"growth path"},
-  {id:"business",       name:"Starting a Business (new licences)", lm_type:"Tier 1", y2025:31000,  y2028:37546,  source:"ADDED/ADRA", notes:"growth path"},
-  {id:"visiting",       name:"Visiting Abu Dhabi (hotel guests)", lm_type:"Tier 2", y2025:6000000,y2028:7322366,source:"DCT", notes:"+6%/yr"},
-  {id:"moving",         name:"Moving to Abu Dhabi (net new residents)", lm_type:"Tier 2", y2025:165000, y2028:186000, source:"SCAD population growth", notes:"net new per year"},
-  {id:"coming_of_age",  name:"Coming of Age (turning 18)",      lm_type:"Tier 2", y2025:30000,  y2028:31000,  source:"SCAD to confirm", notes:"proxy"},
-  {id:"chronic",        name:"Having a Chronic Illness (newly diagnosed NCD)", lm_type:"Tier 2", y2025:15000,  y2028:17000,  source:"DoH to confirm", notes:"proxy"}
+  // id, icon, title, 2025, 2028, tier
+  ["moving","🧳","Moving to Abu Dhabi",230000,200000,"Tier 2"],
+  ["driver","🚗","Driver Licence / Car",80000,95000,"Tier 1"],
+  ["school","🎒","Taking my Kid to School",40000,45000,"Tier 1"],
+  ["baby","👶","Having a Baby",39900,41200,"Tier 1"],
+  ["housing","🏠","Housing (transactions)",31000,40000,"Tier 1"],
+  ["business","🏢","Starting a Business",30000,37500,"Tier 1"],
+  ["marriage","💍","Getting Married",26000,31500,"Tier 1"],
+  ["coming","🎂","Coming of Age",30000,31000,"Tier 2"],
+  ["chronic","❤️‍🩹","Chronic Illness (new)",15000,17000,"Tier 2"],
+  ["retire","🧓","Retiring",9700,10500,"Tier 1"],
+  ["divorce","💔","Getting Divorced",6500,7800,"Tier 1"],
+  ["bereavement","🌸","Losing a Loved One",4590,4871,"Tier 1"],
+  ["disability","♿️","Disability Recognition",3200,3800,"Tier 1"],
 ];
 
-/* ======== HELPERS ======== */
-const fmt = n => n>=1e6 ? (n/1e6).toFixed(2).replace(/\.00$/,'')+'M' :
-                     n>=1e3 ? Math.round(n/1e3)+'k' : n.toLocaleString();
+function fmt(n){return (+n).toLocaleString()}
+function delta(a,b){const d=b-a;return (d>=0?"+":"−")+fmt(Math.abs(d))}
+function pct(a,b){if(!a) return "—"; const p=(b-a)/a*100; return (p>=0?"+":"−")+Math.abs(p).toFixed(1)+"%"}
 
-function totals(list){
-  return list.reduce((acc,d)=>({y2025:acc.y2025+d.y2025, y2028:acc.y2028+d.y2028}), {y2025:0,y2028:0});
-}
+const total25=data.reduce((s,d)=>s+d[3],0), total28=data.reduce((s,d)=>s+d[4],0);
+document.getElementById('k25').textContent=fmt(total25);
+document.getElementById('k28').textContent=fmt(total28);
+document.getElementById('kchg').textContent=`${delta(total25,total28)} (${((total28-total25)/total25*100).toFixed(1)}%)`;
 
-function wrapText(ctx, text, maxWidth, maxLines){
-  const words = text.split(' ');
-  const lines = [];
-  let line = '';
-  for(let i=0;i<words.length;i++){
-    const test = line ? line + ' ' + words[i] : words[i];
-    if(ctx.measureText(test).width <= maxWidth){ line = test; }
-    else{
-      lines.push(line);
-      line = words[i];
-      if(lines.length===maxLines-1){ // last line -> ellipsis
-        while(ctx.measureText(line + '…').width > maxWidth && line.length>1){
-          line = line.slice(0,-1);
-        }
-        lines.push(line + '…');
-        return lines;
-      }
-    }
-  }
-  lines.push(line);
-  return lines.slice(0,maxLines);
-}
+const maxVal=Math.max(...data.flatMap(d=>[d[3],d[4]]));
+const shares=Object.fromEntries(data.map(d=>[d[0], d[4]/total28*100]));
 
-/* ======== STATE ======== */
-let currentYearKey = 'y2025';
-let filterTier = 'All';
-let sortBy = 'y2028';
-
-/* ======== DOM ======== */
-const grid   = document.getElementById('grid');
-const pills  = document.querySelectorAll('.pill[data-year]');
-const toggleTier = document.getElementById('toggleTier');
-const sortSel= document.getElementById('sort');
-const k25 = document.getElementById('kpi25');
-const k28 = document.getElementById('kpi28');
-const kdel= document.getElementById('kpidelta');
-const canvas = document.getElementById('lmCanvas');
-const ctx = canvas.getContext('2d');
-const caption = document.getElementById('chartCaption');
-const chartTitle = document.getElementById('chartTitle');
-const tip = document.getElementById('tt');
-
-/* ======== EVENTS ======== */
-pills.forEach(p=>p.addEventListener('click',()=>{
-  pills.forEach(x=>x.classList.remove('active')); p.classList.add('active');
-  currentYearKey = p.getAttribute('data-year'); render();
-}));
-toggleTier.addEventListener('click',()=>{
-  filterTier = filterTier==='All' ? 'Tier 1' : filterTier==='Tier 1' ? 'Tier 2' : 'All';
-  toggleTier.textContent = filterTier==='All' ? 'All' : (filterTier+' only'); render();
-});
-sortSel.addEventListener('change',()=>{ sortBy = sortSel.value; render(); });
-
-/* ======== RENDER ======== */
-function getList(){
-  let list = data.map(d=>({...d, delta: d.y2028 - d.y2025, deltapct: (d.y2025? (d.y2028-d.y2025)/d.y2025*100 : 0)}));
-  if(filterTier!=='All') list = list.filter(d=>d.lm_type===filterTier);
-  switch(sortBy){
-    case 'y2025': list.sort((a,b)=>b.y2025 - a.y2025); break;
-    case 'y2028': list.sort((a,b)=>b.y2028 - a.y2028); break;
-    case 'delta': list.sort((a,b)=> (b.delta) - (a.delta)); break;
-    case 'az':    list.sort((a,b)=> a.name.localeCompare(b.name)); break;
-  }
-  return list;
-}
-
-function renderKPIs(list){
-  const t = totals(list);
-  k25.textContent = fmt(t.y2025);
-  k28.textContent = fmt(t.y2028);
-  const d = t.y2028 - t.y2025;
-  const pct = t.y2025 ? (d/t.y2025*100) : 0;
-  kdel.textContent = (d>=0?'+':'') + fmt(d) + ' (' + (pct>=0?'+':'') + pct.toFixed(1) + '%)';
-}
-
-function renderCards(list){
-  const maxBoth = Math.max(...list.map(d=>Math.max(d.y2025,d.y2028)));
-  grid.innerHTML = list.map(d=>{
-    const w25 = (d.y2025/maxBoth*100).toFixed(3) + '%';
-    const w28 = (d.y2028/maxBoth*100).toFixed(3) + '%';
-    const tierClr = d.lm_type==='Tier 2' ? 'background:rgba(200,156,255,.18);border-color:#3b2d4f;color:#ceb9f6' :
-                                           'background:rgba(79,179,255,.18);border-color:#2a4964;color:#a7d9ff';
-    const deltaSign = d.delta>=0 ? '+' : '';
+const grid=document.getElementById('grid');
+grid.innerHTML=data
+  .sort((a,b)=>b[4]-a[4]||a[2].localeCompare(b[2]))
+  .map(d=>{
+    const [id,icon,title,v25,v28,tier]=d;
+    const w25=(v25/maxVal*100).toFixed(4), w28=(v28/maxVal*100).toFixed(4);
     return `
-      <div class="card" title="${d.name}">
-        <div class="lm-name">${d.name}</div>
-        <div class="lm-meta">
-          <span class="chip" style="${tierClr}">${d.lm_type}</span>
-          <span class="chip" title="${d.source}">${d.source}</span>
-        </div>
-        <div class="figs">
-          <div class="num">${fmt(d.y2025)} <small>2025</small></div>
-          <div class="num">${fmt(d.y2028)} <small>2028</small></div>
-          <div class="delta">${deltaSign}${fmt(d.delta)} (${deltaSign}${(d.deltapct).toFixed(1)}%)</div>
-        </div>
-        <div class="bars" aria-hidden="true">
-          <div class="bar-row">
-            <div class="bar-label">2025</div>
-            <div class="bar" style="width:${w25}"></div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-label">2028</div>
-            <div class="bar b2028" style="width:${w28}"></div>
-          </div>
-        </div>
-        <div class="lm-meta" style="margin-top:8px">
-          <span class="chip" title="${d.notes}">${d.notes || ''}</span>
-        </div>
-      </div>`;
+    <div class="card">
+      <div class="topline">
+        <div class="icon">${icon}</div>
+        <div class="title">${title}</div>
+        <div class="tier">${tier}</div>
+      </div>
+      <div class="number">${fmt(v28)} <span>2028</span></div>
+      <div class="sub">2025 ${fmt(v25)} • Δ ${delta(v25,v28)} (<span class="pct">${pct(v25,v28)}</span>) • ${shares[id].toFixed(1)}% of 2028 total</div>
+      <div class="bars" aria-hidden="true">
+        <div class="bar b25" style="width:${w25}%"></div>
+        <div class="bar b28" style="width:${w28}%"></div>
+      </div>
+    </div>`;
   }).join('');
-}
-
-let barRects = []; // for tooltips
-
-function drawChart(list){
-  const yearKey = currentYearKey;
-  const top = list.slice(0,10); // top-10 by selected sort
-  const maxv = Math.max(...top.map(d=>d[yearKey]));
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0,0,w,h);
-
-  // fonts
-  ctx.textBaseline = 'alphabetic';
-  const labelFont = '13px system-ui';
-  const valueFont = '12px system-ui';
-  ctx.font = labelFont;
-
-  // compute dynamic label column width (max two lines, ellipsis)
-  const maxLabelPx = Math.min(320, Math.max(170, ...top.map(d=>ctx.measureText(d.name).width)) + 20);
-  const left = maxLabelPx;               // start of bars
-  const rightPad = 18;
-  const topPad = 36;
-  const lineH = 16;
-  const barH = 22;
-  const gap = 12;
-
-  // background
-  ctx.fillStyle = '#0c111b'; ctx.fillRect(0,0,w,h);
-
-  // vertical grid
-  ctx.strokeStyle = 'rgba(255,255,255,.06)';
-  for(let i=1;i<=5;i++){ const x=(w-left-rightPad)/5*i + left; ctx.beginPath(); ctx.moveTo(x,20); ctx.lineTo(x,h-16); ctx.stroke(); }
-
-  // column divider
-  ctx.strokeStyle = 'rgba(255,255,255,.10)'; ctx.beginPath(); ctx.moveTo(left-8,16); ctx.lineTo(left-8,h-16); ctx.stroke();
-
-  // title
-  chartTitle.textContent = 'Top 10 by ' + (yearKey==='y2025' ? '2025' : '2028');
-
-  // draw rows
-  barRects = [];
-  let yCursor = topPad;
-
-  top.forEach((d,i)=>{
-    const labelArea = left - 16; // padding for labels
-    ctx.fillStyle = '#c9d3e3';
-    ctx.font = labelFont;
-
-    // wrap label to two lines with ellipsis
-    const lines = wrapText(ctx, d.name, labelArea-12, 2);
-    // compute row height to fit lines and bar
-    const labelHeight = lines.length * lineH;
-    const rowH = Math.max(labelHeight, barH) + gap;
-
-    // draw label lines
-    lines.forEach((ln,li)=> ctx.fillText(ln, 10, yCursor + (li+1)*lineH));
-
-    // bar position (centered in row)
-    const barY = yCursor + (rowH - gap - barH)/2;
-    const barW = (w - left - rightPad) * (d[yearKey]/maxv);
-
-    // bar
-    ctx.fillStyle = yearKey==='y2025' ? '#2a6bb7' : '#4aa179';
-    ctx.fillRect(left, barY, barW, barH);
-
-    // value label (inside if space, else outside)
-    ctx.font = valueFont;
-    ctx.fillStyle = '#eaf1ff';
-    const valTxt = fmt(d[yearKey]);
-    const valW = ctx.measureText(valTxt).width + 6;
-    if(barW > valW + 8){
-      ctx.fillText(valTxt, left + barW - valW, barY + barH - 6);
-    } else {
-      ctx.fillText(valTxt, left + barW + 6, barY + barH - 6);
-    }
-
-    // rect for tooltip
-    barRects.push({x:left, y:barY, w:barW, h:barH, label:d.name, value:d[yearKey], meta:d.lm_type});
-
-    // next row
-    yCursor += rowH;
-  });
-
-  caption.textContent = 'Bars scaled to the largest ' + (yearKey==='y2025'?'2025':'2028') + ' value (top‑10 shown).';
-}
-
-// simple tooltip on hover
-canvas.addEventListener('mousemove',(e)=>{
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left, y = e.clientY - rect.top;
-  const hit = barRects.find(b => x>=b.x && x<=b.x+b.w && y>=b.y && y<=b.y+b.h);
-  if(hit){
-    tip.style.display='block';
-    tip.style.left = (x+12)+'px';
-    tip.style.top  = (y+12)+'px';
-    tip.textContent = `${hit.label} • ${fmt(hit.value)}`;
-  }else{
-    tip.style.display='none';
-  }
-});
-
-function render(){
-  const list = getList();
-  const t = totals(list);
-  renderKPIs(list);
-  drawChart(list);
-  renderCards(list);
-}
-
-render();
 </script>
-</body>
-</html>
+</body></html>
